@@ -1,0 +1,144 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Usuario;
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+<h1>Editar Perfil</h1>
+
+<h4>Perfil</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditarPerfil" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="IdUsuario" value="@Model.IdUsuario" />
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+ 
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                  @if(User.IsInRole("Administrador"))
+			{
+				 <div class="form-group">
+				<label class="control-label">Rol</label>
+				<select class="form-control"  name="Rol">
+					
+					
+						<option asp-for="Rol" value="1">Administrador</option>
+                        <option asp-for="Rol" value="2">Empleado</option>
+					
+				</select>
+				<span asp-validation-for="Rol" class="text-danger"></span>
+			</div>
+			}
+           <br>
+                 <div class="form-group">
+                        <input type="submit"  value="Guardar Datos" class="btn btn-primary" />
+                    </div>
+        </form>
+            @if(User.Identity.Name==Model.Email){
+              
+                    <form asp-action="CambiarPass" asp-route-id="@Model.IdUsuario" name="CambiarPass">
+                        <h4>Cambiar Contraseña</h4>
+                        <input type="hidden" name="IdUsuario" value="@Model.IdUsuario" />
+                        <div class="form-group">
+                            <label class="control-label">Clave Antigüa</label>
+                            <input type="password" id="Clave" name="Clave" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nueva Clave</label>
+                            <input type="password"  id="clnueva" name="clnueva" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Repetir Clave Nueva</label>
+                            <input type="password" id="ClaveRep" name="ClaveRep" class="form-control" />
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="submit" disabled  id="btnClave"  value="Cambiar Contraseña" class="btn btn-primary" />
+                        </div>
+                            
+                    </form>
+            }
+            <form asp-action="Avatar" asp-route-id="@Model.IdUsuario" enctype="multipart/form-data">
+                <div class="form-group">
+                     <input type="hidden" name="IdUsuario" value="@Model.IdUsuario" />
+                    <label asp-for="AvatarFile" class="control-label"></label>
+                    <input type="file" asp-for="AvatarFile" class="form-control" />
+                    <span asp-validation-for="AvatarFile" class="text-danger"></span>
+                    <br>
+                    <div class="form-group">
+                    <input type="submit"  value="Guardar Avatar" class="btn btn-primary" />
+                </div>
+            
+                </div>
+           
+                <div class="form-group">
+                    <label asp-for="Avatar" class="control-label"></label><br />
+                    @if (Model.Avatar != "")
+                    {
+                        <img src="@Model.Avatar" />
+                    }
+                    else
+                    {
+                        <p>Sin avatar</p>
+                    }
+                </div>
+                <br>
+            </form>
+                
+           
+        
+    </div>
+</div>
+<Script>
+     
+  //  var c = document.getElementById("ClaveReeticion");
+    
+    
+</Script>
+
+@*<h4>Cambiar contraseña</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CambiarPass" asp-route-id="@Model.IdPropietario" name="CambiarPass">
+            <input type="hidden" name="IdPropietario" value="@Model.IdPropietario" />
+            <div class="form-group">
+                <label class="control-label">Clave Antigüa</label>
+                <input type="password" name="ClaveVieja" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Nueva Clave</label>
+                <input type="password" name="ClaveNueva" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Repetir Clave Nueva</label>
+                <input type="password" name="ClaveRepeticion" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Cambiar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>*@
+
+<div>
+    <a asp-action="Listado">Volver al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+   
+}

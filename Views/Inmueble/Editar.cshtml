@@ -1,0 +1,146 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Inmueble;
+@{
+    ViewData["Title"] = "Editar Inmueble";
+    var listaPropietarios = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Propietario>)ViewBag.Propietarios;
+    var listaTipos = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Tipo>)ViewBag.Tipos;
+    var listaDisponibilidad = ViewBag.Disponibilidad;
+    var listaUso = ViewBag.Uso;
+}
+
+
+<h1>Editar</h1>
+
+<h4>Inmueble</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Guardar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="IdInmueble" value="@Model.IdInmueble" />
+            
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Importe" class="control-label"></label>
+                <input asp-for="Importe" class="form-control" />
+                <span asp-validation-for="Importe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Superficie" class="control-label"></label>
+                <input asp-for="Superficie" class="form-control" />
+                <span asp-validation-for="Superficie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Latitud" class="control-label"></label>
+                <input asp-for="Latitud" class="form-control" />
+                <span asp-validation-for="Latitud" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Longitud" class="control-label"></label>
+                <input asp-for="Longitud" class="form-control" />
+                <span asp-validation-for="Longitud" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+				<label class="control-label">Uso</label>
+				<select class="form-control" name="Uso">
+					@foreach (var item in listaUso)
+					{    @if(item == @Model.Uso){
+                            <option selected value="@item">@(item)</option>
+
+                        }else{
+						    <option value="@item">@(item)</option>
+                            }
+					}
+				</select>
+				<span asp-validation-for="Uso" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Disponibilidad</label>
+				<select class="form-control" name="Disp">
+					@foreach (var item in listaDisponibilidad)
+					{    @if(item == @Model.Disp){
+                            <option selected value="@item">@(item)</option>
+
+                        }else{
+						    <option value="@item">@(item)</option>
+                            }
+					}
+				</select>
+				<span asp-validation-for="Disponible" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Tipo Inmueble</label>
+				<select class="form-control" name="TipoId">
+					@foreach (var item in listaTipos)
+					{    @if(item.IdTipo == @Model.TipoId){
+                            <option selected value="@item.IdTipo">@(item.ToString())</option>
+
+                        }else{
+						    <option value="@item.IdTipo">@(item.ToString())</option>
+                            }
+					}
+				</select>
+				<span asp-validation-for="TipoId" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Propietario</label>
+				<select class="form-control" name="PropietarioId">
+					@foreach (var item in listaPropietarios)
+					{    @if(item.IdPropietario== @Model.PropietarioId){
+                            <option selected value="@item.IdPropietario">@(item.ToString())</option>
+
+                        }else{
+						    <option value="@item.IdPropietario">@(item.ToString())</option>
+                            }
+					}
+				</select>
+				<span asp-validation-for="PropietarioId" class="text-danger"></span>
+			</div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<h4>Cambiar contraseña</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CambiarPass" asp-route-id="@Model.IdPropietario" name="CambiarPass">
+            <input type="hidden" name="IdPropietario" value="@Model.IdPropietario" />
+            <div class="form-group">
+                <label class="control-label">Clave Antigüa</label>
+                <input type="password" name="ClaveVieja" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Nueva Clave</label>
+                <input type="password" name="ClaveNueva" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Repetir Clave Nueva</label>
+                <input type="password" name="ClaveRepeticion" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Cambiar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>*@
+
+<div>
+    <a asp-action="Listado">Volver al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

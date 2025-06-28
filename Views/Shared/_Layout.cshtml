@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Tp_Inmobiliaria_Ledesma_Lillo.Net</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Tp_Inmobiliaria_Ledesma_Lillo.Net.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @if (!User.Identity.IsAuthenticated||User.Identity==null) {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Inicio </a>
+                    <a class="navbar-brand"asp-controller="Usuario" asp-action="Login">Loguearse</a>
+                    }
+                else{
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Inmobiliaria Ledesma-Lillo</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Listado">Propietarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Listado">Inquilinos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Listado">Inmuebles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Contrato" asp-action="Listado">Contratos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tipo" asp-action="Listado">Tipos Inmueble</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pago" asp-action="Listado">Pagos</a>
+                            </li>
+                            @if(User.IsInRole("Administrador")){
+                                <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Listado">Usuarios</a>
+                            </li>
+                            }
+                
+                            <li class="nav-item"></li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Perfil">Mi Perfil</a>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Logout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                    }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+		<div class="">
+			@if (ViewBag.Id != null)
+			{//alta exitosa
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+					<strong>¡Éxito!</strong> La entidad fue dada de alta con id: @ViewBag.Id
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true"><i class="fa fa-check" aria-hidden="true"></i></span>
+					</button>
+				</div>
+			}
+			else if (ViewBag.Mensaje != null)
+			{//cartel general
+				<div class="alert alert-info alert-dismissible fade show" role="alert">
+					<strong>Información:</strong> @ViewBag.Mensaje
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true"><i class="fa fa-window-close" aria-hidden="true"></i></span>
+					</button>
+				</div>
+			}
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Inmobiliaria Ledesma-Lillo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+     <script src="https://kit.fontawesome.com/7aad8207b8.js" crossorigin="anonymous"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

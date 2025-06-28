@@ -1,0 +1,68 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Contrato;
+@{
+    ViewData["Title"] = "Guardar";
+    var listaInmuebles = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Inmueble>)ViewBag.Inmuebles;
+    var listaInquilinos = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Inquilino>)ViewBag.Inquilinos;
+}
+<h1>Nuevo Contrato</h1>
+
+<h4>Contrato</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Guardar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+				<label class="control-label">Inquilino</label>
+				<select class="form-control" name="InquilinoId">
+					@foreach (var item in listaInquilinos)
+					{
+						<option value="@item.IdInquilino">@(item.ToString())</option>
+					}
+				</select>
+				<span asp-validation-for="InquilinoId" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Inmueble</label>
+				<select class="form-control" name="InmuebleId">
+					@foreach (var item in listaInmuebles)
+					{
+						<option value="@item.IdInmueble">@(item.Direccion)</option>
+					}
+				</select>
+				<span asp-validation-for="InmuebleId" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+                <label asp-for="FecInicio" class="control-label"></label>
+                <input asp-for="FecInicio" class="form-control" />
+                <span asp-validation-for="FecInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FecFin" class="control-label"></label>
+                <input asp-for="FecFin" class="form-control" />
+                <span asp-validation-for="FecFin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Monto" class="control-label"></label>
+                <input asp-for="Monto" class="form-control" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Listado">Volver</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,26 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Tipo;
+@{
+    ViewData["Title"] = "Detalles";
+}
+<h1>Detalles</h1>
+<div>
+    <h4>Tipo</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdTipo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdTipo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Listado">Volver al Listado</a>
+</div>
