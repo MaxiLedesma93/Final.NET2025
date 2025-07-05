@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-04-2024 a las 22:18:49
--- Versión del servidor: 10.4.24-MariaDB
--- Versión de PHP: 8.1.6
+-- Tiempo de generación: 05-07-2025 a las 17:02:16
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,14 +35,14 @@ CREATE TABLE `contratos` (
   `FecFin` datetime NOT NULL,
   `Monto` decimal(10,0) NOT NULL,
   `Estado` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `contratos`
 --
 
 INSERT INTO `contratos` (`IdContrato`, `InquilinoId`, `InmuebleId`, `FecInicio`, `FecFin`, `Monto`, `Estado`) VALUES
-(12, 2, 5, '2024-04-23 14:20:00', '2024-07-31 14:20:00', '90000', 0);
+(12, 2, 5, '2024-04-23 14:20:00', '2024-07-31 14:20:00', 90000, 0);
 
 -- --------------------------------------------------------
 
@@ -60,17 +60,19 @@ CREATE TABLE `inmuebles` (
   `Uso` varchar(100) NOT NULL,
   `PropietarioId` int(11) NOT NULL,
   `TipoId` int(11) NOT NULL,
-  `Importe` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `Importe` int(11) NOT NULL,
+  `Disponible` tinyint(1) NOT NULL,
+  `Disp` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `inmuebles`
 --
 
-INSERT INTO `inmuebles` (`IdInmueble`, `Direccion`, `Ambientes`, `Superficie`, `Latitud`, `Longitud`, `Uso`, `PropietarioId`, `TipoId`, `Importe`) VALUES
-(5, 'Colon 123', 4, 80, '12', '13', 'residencial', 2, 4, 90000),
-(6, 'Maipu 2546', 5, 100, '33', '45', 'Comercial', 3, 4, 80000),
-(8, 'Mendoza 123', 3, 78, '12', '13', 'Residencial', 7, 6, 80000);
+INSERT INTO `inmuebles` (`IdInmueble`, `Direccion`, `Ambientes`, `Superficie`, `Latitud`, `Longitud`, `Uso`, `PropietarioId`, `TipoId`, `Importe`, `Disponible`, `Disp`) VALUES
+(5, 'Colon 123', 4, 80, 12, 13, 'residencial', 2, 4, 90000, 0, ''),
+(6, 'Maipu 2546', 5, 100, 33, 45, 'Comercial', 3, 4, 80000, 0, ''),
+(8, 'Mendoza 123', 3, 78, 12, 13, 'Residencial', 7, 6, 80000, 0, '');
 
 -- --------------------------------------------------------
 
@@ -85,7 +87,7 @@ CREATE TABLE `inquilinos` (
   `Dni` varchar(10) NOT NULL,
   `Telefono` varchar(20) NOT NULL,
   `Email` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `inquilinos`
@@ -109,17 +111,17 @@ CREATE TABLE `pagos` (
   `Importe` decimal(10,0) NOT NULL,
   `Detalle` varchar(100) NOT NULL,
   `Est` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pagos`
 --
 
 INSERT INTO `pagos` (`IdPago`, `NumPago`, `FechaPago`, `ContratoId`, `Importe`, `Detalle`, `Est`) VALUES
-(30, 1, '2024-04-24 00:00:00', 12, '56000', 'Abril', 1),
-(31, 2, '2024-04-25 00:00:00', 12, '56000', 'Mayo', 1),
-(32, 1, '2024-04-25 00:00:00', 12, '56000', 'Abril', 0),
-(33, 2, '2024-04-30 00:00:00', 12, '90000', 'Efectivo', 0);
+(30, 1, '2024-04-24 00:00:00', 12, 56000, 'Abril', 1),
+(31, 2, '2024-04-25 00:00:00', 12, 56000, 'Mayo', 1),
+(32, 1, '2024-04-25 00:00:00', 12, 56000, 'Abril', 0),
+(33, 2, '2024-04-30 00:00:00', 12, 90000, 'Efectivo', 0);
 
 -- --------------------------------------------------------
 
@@ -135,7 +137,7 @@ CREATE TABLE `propietarios` (
   `Email` varchar(50) NOT NULL,
   `Telefono` varchar(20) NOT NULL,
   `Clave` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `propietarios`
@@ -156,7 +158,7 @@ INSERT INTO `propietarios` (`IdPropietario`, `Nombre`, `Apellido`, `Dni`, `Email
 CREATE TABLE `tipos` (
   `IdTipo` int(11) NOT NULL,
   `Descripcion` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipos`
@@ -183,14 +185,14 @@ CREATE TABLE `usuarios` (
   `Clave` varchar(100) NOT NULL,
   `Avatar` varchar(200) NOT NULL,
   `Rol` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
 INSERT INTO `usuarios` (`IdUsuario`, `Nombre`, `Apellido`, `Email`, `Clave`, `Avatar`, `Rol`) VALUES
-(54, 'Maximiliano Alberto', 'Ledesma', 'maximiliano@gmail.com', 'myl4T6FgkMUdldPQ96rZUnNYn0ho5fyVIc39WWFLd8Y=', ' ', 1),
+(54, 'Maximiliano Alberto', 'Ledesma', 'maximiliano@gmail.com', 'myl4T6FgkMUdldPQ96rZUnNYn0ho5fyVIc39WWFLd8Y=', '/Uploads\\avatar_54.webp', 1),
 (55, 'Lucila', 'Lillo', 'lula@mail.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '', 1),
 (56, 'Marcos', 'Galperin', 'marcos@gmail.com', 'myl4T6FgkMUdldPQ96rZUnNYn0ho5fyVIc39WWFLd8Y=', '', 2);
 

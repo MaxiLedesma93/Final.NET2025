@@ -347,10 +347,13 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
-            WHERE {nameof(Contrato.FecFin)} <= @{nameof(Contrato.FecFin)}";
+            WHERE {nameof(Contrato.FecFin)} <= @{nameof(Contrato.FecFin)} AND
+            {nameof(Contrato.FecFin)} >= @{"hoy"}
+            AND c.estado = 1 ";
            
             using(var command = new MySqlCommand(sql, connection)){
                 command.Parameters.AddWithValue($"@{nameof(Contrato.FecFin)}", fechaFin);
+                command.Parameters.AddWithValue("hoy", DateTime.Now);
                 connection.Open();
                 using(var reader = command.ExecuteReader())
                     while(reader.Read()){

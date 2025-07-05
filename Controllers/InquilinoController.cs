@@ -29,6 +29,8 @@ public class InquilinoController : Controller
            
             var lista = repo.ObtenerTodos();
             ViewBag.id = TempData["id"];
+            if (TempData.ContainsKey("Mensaje"))
+					ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
         catch(Exception ex)
@@ -84,13 +86,14 @@ public class InquilinoController : Controller
                 }
                 else{
                     repo.Alta(inquilino);
-                    TempData["id"] = inquilino.IdInquilino; 
+                    //TempData["id"] = inquilino.IdInquilino; 
                 }
            }
            else 
            {
             return View(inquilino); 
            }
+            TempData["id"] = inquilino.IdInquilino; 
             return RedirectToAction(nameof(Listado));
         }
         catch(Exception ex)

@@ -33,8 +33,8 @@ public class PropietarioController : Controller
             // TempData es para pasar datos entre acciones
 				// ViewBag/Data es para pasar datos del controlador a la vista
 				// Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
-				if (TempData.ContainsKey("Mensaje"))
-					ViewBag.Mensaje = TempData["Mensaje"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
         catch(Exception ex)
@@ -79,35 +79,30 @@ public class PropietarioController : Controller
     [Authorize]
     public IActionResult Guardar(Propietario propietario)
     {
-       
+
         try
         {
-           if(ModelState.IsValid)
-           {
-                if(propietario.IdPropietario > 0)
-                {   
-                    repo.Modificacion(propietario);
-
-                }
-                else{
-                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-							password: propietario.Clave,
-							salt: System.Text.Encoding.ASCII.GetBytes(config["Salt"]),
-							prf: KeyDerivationPrf.HMACSHA1,
-							iterationCount: 1000,
-							numBytesRequested: 256 / 8));
-                    propietario.Clave = hashed;
+            if (propietario.IdPropietario > 0)
+            {
+                repo.Modificacion(propietario);
+                return RedirectToAction(nameof(Listado));
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
                     repo.Alta(propietario);
                     TempData["id"] = propietario.IdPropietario;
+                    return RedirectToAction(nameof(Listado));
                 }
-           }
-           else 
-           {
-            return View(propietario); 
-           }
-            return RedirectToAction(nameof(Listado));
+                else
+                {
+                    return View(propietario);
+                }
+
+            }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return Json(new { Error = ex.Message });
         }

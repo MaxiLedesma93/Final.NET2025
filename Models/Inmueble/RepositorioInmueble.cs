@@ -21,7 +21,7 @@ public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
                            {nameof(Inmueble.TipoId)}, {nameof(Tipo.Descripcion)}
                            from inmuebles i INNER JOIN propietarios p ON i.PropietarioId = p.IdPropietario
                            INNER JOIN tipos t ON i.TipoId = t.IdTipo
-                           WHERE i.Disponible = 0";
+                           WHERE i.Disponible = 1";
             using (var command = new MySqlCommand(sql, connection))
             {
                 connection.Open();
@@ -235,7 +235,7 @@ public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
                            {nameof(Inmueble.TipoId)}, {nameof(Tipo.Descripcion)}
                            from inmuebles i INNER JOIN propietarios p ON i.PropietarioId = p.IdPropietario
                            INNER JOIN tipos t ON i.TipoId = t.IdTipo
-                           WHERE i.Disponible = 1";
+                           WHERE i.Disponible = 0";
             using (var command = new MySqlCommand(sql, connection))
             {
                 connection.Open();

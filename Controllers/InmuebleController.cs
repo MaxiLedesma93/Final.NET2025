@@ -104,9 +104,8 @@ public class InmuebleController : Controller
                     repo.Modificacion(inmueble);
                 }
                 else{
-                    
-                    repo.Alta(inmueble);
                     disp(inmueble);
+                    repo.Alta(inmueble);
                     TempData["id"] = inmueble.IdInmueble; 
                 }
            }
@@ -170,7 +169,7 @@ public class InmuebleController : Controller
 
     public void validaDisponible(Inmueble? inmu)
     {
-        if(inmu.Disponible == 0)
+        if(inmu.Disponible == 1)
         {
            inmu.Disp = "Disponible"; 
         }
@@ -183,10 +182,10 @@ public class InmuebleController : Controller
     {
         if(inmu.Disp == "Disponible")
         {
-            inmu.Disponible = 0;
+            inmu.Disponible = 1;
         }
         else {
-            inmu.Disponible = 1;
+            inmu.Disponible = 0;
         }
     }
 

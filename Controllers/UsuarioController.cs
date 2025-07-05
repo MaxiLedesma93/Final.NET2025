@@ -32,6 +32,12 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Controllers
 		public ActionResult Listado()
 		{
 			var usuarios1 = repo.ObtenerTodos();
+			ViewBag.id = TempData["id"];
+            // TempData es para pasar datos entre acciones
+				// ViewBag/Data es para pasar datos del controlador a la vista
+				// Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
+				if (TempData.ContainsKey("Mensaje"))
+					ViewBag.Mensaje = TempData["Mensaje"];
 			return View(usuarios1);
 		}
 

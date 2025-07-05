@@ -34,7 +34,6 @@ public class RepositorioInquilino: RepositorioBase , IRepositorioInquilino
 					Dni = reader.GetString(nameof(Inquilino.Dni)),
 					Telefono = reader.GetString(nameof(Inquilino.Telefono)),
 					Email = reader.GetString(nameof(Inquilino.Email)),
-					//Clave = reader.GetString(nameof(Inquilino.Clave)),
 				});
 			}
 			connection.Close();
@@ -68,7 +67,6 @@ public class RepositorioInquilino: RepositorioBase , IRepositorioInquilino
 					Dni = reader.GetString(nameof(Inquilino.Dni)),
 					Telefono = reader.GetString(nameof(Inquilino.Telefono)),
 					Email = reader.GetString(nameof(Inquilino.Email)),
-					//Clave = reader.GetString(nameof(Inquilino.Clave)),
 				};
 			}
 			connection.Close();
