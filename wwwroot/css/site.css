@@ -21,3 +21,7 @@ body {
   margin-bottom: 60px;
     background-color: #FCFBD4;
 }
+
+.accordion-body{
+  background-color: #FCFBD4;
+}
