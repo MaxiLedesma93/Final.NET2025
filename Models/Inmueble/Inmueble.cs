@@ -33,8 +33,9 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
 
 		[Display(Name = "Disponible")]
 		public int Disponible {get; set;}
+		
 
-		public string? Disp {get; set;}
+		public string? Disp { get; set; }
    }
    
 }

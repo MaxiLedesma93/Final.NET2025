@@ -25,22 +25,48 @@ public class InmuebleController : Controller
     }
 
     [Authorize]
-    public IActionResult Listado()
+    public IActionResult Listado(string? listar, DateTime? fecInicio, DateTime? fecFin)
     {
         try
         {
             ViewBag.Tipos = repoTipo.ObtenerTodos();
+            ViewBag.listar = listar;
+            if (listar != null)
+            {
+                if (listar.Equals("suspendidos"))
+                {
+                    var listaSuspendidos = repo.obtenerInmueblesSuspendidos();
+                    validaDisponibles(listaSuspendidos);
+                    return View(listaSuspendidos);
+                }
+                if (listar.Equals("disponibles"))
+                {
+                    var listaDisponibles = repo.ObtenerDisponibles();
+                    validaDisponibles(listaDisponibles);
+                    return View(listaDisponibles);
+                }
+            }
+            if (fecInicio != null && fecFin != null)
+            {
+                var listaSinContratos = repo.ObtenerSinContrato(fecInicio, fecFin);
+                validaDisponibles(listaSinContratos);
+                return View(listaSinContratos);
+            }
             var lista = repo.ObtenerTodos();
-            ViewBag.id = TempData["id"];
-            // TempData es para pasar datos entre acciones
-				// ViewBag/Data es para pasar datos del controlador a la vista
-				// Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
-				if (TempData.ContainsKey("Mensaje"))
-					ViewBag.Mensaje = TempData["Mensaje"];
             validaDisponibles(lista);
             return View(lista);
+           /* var lista = repo.ObtenerTodos();
+               ViewBag.id = TempData["id"];
+               // TempData es para pasar datos entre acciones
+                   // ViewBag/Data es para pasar datos del controlador a la vista
+                   // Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
+                   if (TempData.ContainsKey("Mensaje"))
+                       ViewBag.Mensaje = TempData["Mensaje"];
+               validaDisponibles(lista);
+               return View(lista);
+               */
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return Json(new { Error = ex.Message });
         }
@@ -151,7 +177,7 @@ public class InmuebleController : Controller
     }
 
     [Authorize]
-    public IActionResult InmueblesSuspendidos()
+    public IActionResult InmueblesSinContrato(DateTime fecInicio, DateTime fecFin)
     {
         
         var lista = repo.obtenerInmueblesSuspendidos();

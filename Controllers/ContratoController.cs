@@ -33,7 +33,20 @@ public class ContratoController : Controller
         try
         {   ViewBag.dias = dias;
             IList<Contrato> filtrados = new List<Contrato>();
+            IList<Contrato> vigentes = new List<Contrato>();
             var lista=repo.ObtenerTodos();
+            foreach(var contrato in lista)
+            {
+                if (contrato.FecFin < DateTime.Now)
+                {
+                    contrato.Estado = false;
+                    repo.Modificacion(contrato);
+                }
+                else
+                {
+                    vigentes.Add(contrato);
+                }
+            }
             var listaInm = repoInmu.ObtenerTodos();
             ViewBag.Inmuebles = listaInm;
             if(dir!=null){
@@ -56,7 +69,7 @@ public class ContratoController : Controller
                     // Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
                     if (TempData.ContainsKey("Mensaje"))
                         ViewBag.Mensaje = TempData["Mensaje"];
-                return View(lista);
+                return View(vigentes);
             }
             else{
                        
@@ -119,21 +132,36 @@ public class ContratoController : Controller
             
            if(ModelState.IsValid)
            {
-                if(contrato.IdContrato > 0)
-                {   
-                    repo.Modificacion(contrato);
-                }
-                else{
-                    
+            //!------ ACA la consulta no devuelve el contrato. 
+                Contrato existe = repo.ValidarInmuebleIdyFechas(contrato.InmuebleId, contrato.FecInicio, contrato.FecFin);
+                if (existe==null)
+                {
                     repo.Alta(contrato);
-                    TempData["id"] = contrato.IdContrato; 
+                    TempData["id"] = contrato.IdContrato;
+                    return RedirectToAction(nameof(Listado));
                 }
+                else
+                {
+                    if (contrato.IdContrato > 0)
+                    {
+                        repo.Modificacion(contrato);
+                        TempData["Mensaje"] = "Datos guardados correctamente";
+                        return RedirectToAction(nameof(Listado));
+                       
+                    }
+                    else
+                    {
+                        TempData["Mensaje"] = "Ya existe un contrato para el inmueble en esas fechas!";
+                        return RedirectToAction(nameof(Listado));
+                    }
+                }
+               
            }
            else 
            {
-            return View(contrato); 
+                return View(contrato);
            }
-            return RedirectToAction(nameof(Listado));
+            
         }
         catch(Exception ex)
         {
