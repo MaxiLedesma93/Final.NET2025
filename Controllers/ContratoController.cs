@@ -13,17 +13,19 @@ public class ContratoController : Controller
     
     private readonly IConfiguration config;
     private readonly IRepositorioContrato repo;
+    private readonly IRepositorioUsuario repoUsuario;
 
     private readonly IRepositorioInmueble repoInmu;
     private readonly IRepositorioInquilino repoInqui;
     
 
     public ContratoController(IRepositorioContrato repo, IRepositorioInmueble repoInmu,
-      ILogger<HomeController> logger, IConfiguration config, IRepositorioInquilino repoInqui)
+      ILogger<HomeController> logger, IConfiguration config, IRepositorioInquilino repoInqui, IRepositorioUsuario repoUsuario)
     {   this.config = config;
         this.repo  =repo;
         this.repoInqui = repoInqui;
         this.repoInmu = repoInmu;
+        this.repoUsuario = repoUsuario;
         _logger = logger;
     }
 
@@ -35,7 +37,8 @@ public class ContratoController : Controller
             IList<Contrato> filtrados = new List<Contrato>();
             IList<Contrato> vigentes = new List<Contrato>();
             var lista=repo.ObtenerTodos();
-            foreach(var contrato in lista)
+            Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
+            foreach (var contrato in lista)
             {
                 if (contrato.FecFin < DateTime.Now)
                 {
@@ -132,10 +135,11 @@ public class ContratoController : Controller
             
            if(ModelState.IsValid)
            {
-            //!------ ACA la consulta no devuelve el contrato. 
+                Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
                 Contrato existe = repo.ValidarInmuebleIdyFechas(contrato.InmuebleId, contrato.FecInicio, contrato.FecFin);
                 if (existe==null)
                 {
+                    contrato.UsuarioAlta = usuario.IdUsuario;
                     repo.Alta(contrato);
                     TempData["id"] = contrato.IdContrato;
                     return RedirectToAction(nameof(Listado));

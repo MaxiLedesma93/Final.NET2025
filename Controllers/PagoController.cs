@@ -23,15 +23,15 @@ public class PagoController : Controller
         _logger = logger;
     }
     [Authorize]
-    public IActionResult Listado()
+    public IActionResult Listado(int id)
     {
         try
         {
-            var lista = repo.ObtenerTodos();
+            var lista = repo.ObtenerPagosPorContrato(id);
             if(lista.Count != 0)
             { validaEstado(lista); }
             
-            ViewBag.id = TempData["id"];
+            ViewBag.id = id;
             // TempData es para pasar datos entre acciones
 				// ViewBag/Data es para pasar datos del controlador a la vista
 				// Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
@@ -98,8 +98,9 @@ public class PagoController : Controller
                 }
                 else
                 {
+                    pago.Est = 1;
                     repo.Alta(pago);
-                    pago.Est = 0;
+                   
                     TempData["id"] = pago.IdPago;
                 }
            }
@@ -165,7 +166,7 @@ public class PagoController : Controller
     {
         foreach(Pago p in lista)
             {
-                if(p.Est == 0)
+                if(p.Est == 1)
                 {
                     p.Activo = "Activo";
                 }

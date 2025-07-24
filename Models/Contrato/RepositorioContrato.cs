@@ -423,10 +423,14 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             var sql = @$" SELECT {nameof(Contrato.IdContrato)},
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
-            {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inmueble.Direccion)}
+            {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)},{nameof(Inquilino.Nombre)}, {nameof(Inquilino.Apellido)},
+            {nameof(Inmueble.Direccion)}
             
-            FROM contratos c INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
-            WHERE c.estado = 1 AND ({nameof(Inmueble.IdInmueble)} =@{nameof(Inmueble.IdInmueble)}) AND ({nameof(Contrato.InmuebleId)} = @{nameof(Contrato.InmuebleId)}) AND ({nameof(Contrato.FecInicio)} >= @{nameof(Contrato.FecInicio)}) AND ({nameof(Contrato.FecFin)} <= @{nameof(Contrato.FecFin)})";
+            FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
+            INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
+            WHERE c.estado = 1 AND ({nameof(Contrato.InmuebleId)} = @{nameof(Contrato.InmuebleId)}) 
+            AND ((({nameof(Contrato.FecInicio)} <= @{nameof(Contrato.FecInicio)}) AND ({nameof(Contrato.FecFin)} >= @{nameof(Contrato.FecInicio)}))
+            OR (({nameof(Contrato.FecFin)} >= @{nameof(Contrato.FecFin)}) AND ({nameof(Contrato.FecInicio)} <= @{nameof(Contrato.FecFin)})))";
            
             using(var command = new MySqlCommand(sql, connection))
             {
@@ -449,6 +453,12 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            Inquilino = new Inquilino
+                            {
+                                IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
+                                Nombre = reader.GetString(nameof(Inquilino.Nombre)),
+                                Apellido = reader.GetString(nameof(Inquilino.Apellido))
+                            },
                             Inmueble = new Inmueble
                             {
                                 IdInmueble = reader.GetInt32(nameof(Contrato.InmuebleId)),

@@ -99,7 +99,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                                 {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}
                             from pagos p INNER JOIN contratos c ON p.ContratoId = c.IdContrato
                             INNER JOIN inquilinos inq ON c.InquilinoId = inq.IdInquilino
-                            WHERE p.Est = 0";
+                            WHERE p.Est = 1";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -143,12 +143,13 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
 		using(var connection = new MySqlConnection(connectionString))
 		{
 			var sql = @$"INSERT INTO pagos ({nameof(Pago.NumPago)}, {nameof(Pago.Importe)}, {nameof(Pago.FechaPago)},
-                        {nameof(Pago.Detalle)}, {nameof(Pago.ContratoId)})
+                        {nameof(Pago.Detalle)}, {nameof(Pago.ContratoId)}, {nameof(Pago.Est)})
 				VALUES (@{nameof(Pago.NumPago)},
                         @{nameof(Pago.Importe)},
                         @{nameof(Pago.FechaPago)},
                         @{nameof(Pago.Detalle)},
-                        @{nameof(Pago.ContratoId)});
+                        @{nameof(Pago.ContratoId)},
+                        @{nameof(Pago.Est)});
 				SELECT LAST_INSERT_ID();";
 			using(var command = new MySqlCommand(sql, connection))
 			{
@@ -157,6 +158,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                 command.Parameters.AddWithValue($"@{nameof(Pago.FechaPago)}", pago.FechaPago);
                 command.Parameters.AddWithValue($"@{nameof(Pago.Detalle)}", pago.Detalle);
                 command.Parameters.AddWithValue($"@{nameof(Pago.ContratoId)}", pago.ContratoId);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Est)}", pago.Est);
 
 				connection.Open();
 				id = Convert.ToInt32(command.ExecuteScalar());
@@ -173,22 +175,14 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
 		using(var connection = new MySqlConnection(connectionString))
 		{
 			var sql = @$"UPDATE pagos
-				SET {nameof(Pago.NumPago)} = @{nameof(Pago.NumPago)},
-				{nameof(Pago.FechaPago)} = @{nameof(Pago.FechaPago)},
-                {nameof(Pago.Importe)} = @{nameof(Pago.Importe)},
-                {nameof(Pago.Detalle)} = @{nameof(Pago.Detalle)},
-                {nameof(Pago.ContratoId)} = @{nameof(Pago.ContratoId)},
-                {nameof(Pago.Est)} = @{nameof(Pago.Est)}
+				SET
+                {nameof(Pago.Detalle)} = @{nameof(Pago.Detalle)}
 
 				WHERE {nameof(Pago.IdPago)} = @{nameof(Pago.IdPago)}";
 			using(var command = new MySqlCommand(sql, connection))
 			{
-				command.Parameters.AddWithValue($"@{nameof(Pago.NumPago)}", pago.NumPago);
-				command.Parameters.AddWithValue($"@{nameof(Pago.FechaPago)}", pago.FechaPago);
-				command.Parameters.AddWithValue($"@{nameof(Pago.Importe)}", pago.Importe);
+				
                 command.Parameters.AddWithValue($"@{nameof(Pago.Detalle)}", pago.Detalle);
-				command.Parameters.AddWithValue($"@{nameof(Pago.ContratoId)}", pago.ContratoId);
-                command.Parameters.AddWithValue($"@{nameof(Pago.Est)}", pago.Est);
 				command.Parameters.AddWithValue($"@{nameof(Pago.IdPago)}", pago.IdPago);
 				connection.Open();
 				command.ExecuteNonQuery();
@@ -203,7 +197,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
 		using(var connection = new MySqlConnection(connectionString))
 		{
 			var sql = @$"UPDATE pagos
-                SET Est = 1
+                SET Est = 0
 				WHERE {nameof(Pago.IdPago)} = @{nameof(Pago.IdPago)}";
 			using(var command = new MySqlCommand(sql, connection))
 			{
@@ -227,7 +221,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                                 {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}
                             from pagos p INNER JOIN contratos c ON p.ContratoId = c.IdContrato
                             INNER JOIN inquilinos inq ON c.InquilinoId = inq.IdInquilino
-                            WHERE p.Est = 1";
+                            WHERE p.Est = 0";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     connection.Open();

@@ -21,7 +21,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-6">
-                        <label for="listar" class="control-label "><strong>Filtrar Inmuebles:</strong></label>
+                        <label for="listar" class="control-label "><h5><strong>Filtrar Inmuebles:</strong></h5></label>
                         <select  name="listar" id="listar" class="form-control-sm">
                             <option  value="" >Todos</option>
                             <option selected="@(ViewBag.listar=="disponibles")" value="disponibles">Disponibles</option>
@@ -29,7 +29,9 @@
                         </select>
                         <br>
                     </div>
-                    <h4>Inmuebles desocupados entre:</h4>
+                    <br>
+                    <br>
+                    <h5><strong>Inmuebles desocupados entre:</strong></h5>
                     <div class="col-3"> 
                         <label for="fecInf" class="control-label "><strong>Fecha de Inicio:</strong></label>
                         <input type="datetime-local" class="form-control-sm mr-3" name="fecInicio" id="fecInicio">

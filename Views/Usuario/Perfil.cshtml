@@ -11,7 +11,7 @@
             <form asp-action="Perfil" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="profile-img">
-                        <img src="@Model.Avatar" alt="Sin foto de perfil" />
+                        <img src="@Model.Avatar" width="200" height="200" alt="Sin foto de perfil" />
 
                         <div class="form-group">
                             <label asp-for="AvatarFile" class="control-label"></label>

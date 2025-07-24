@@ -407,9 +407,9 @@ public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
                         from inmuebles i INNER JOIN propietarios p ON i.PropietarioId = p.IdPropietario
                         INNER JOIN tipos t ON i.TipoId = t.IdTipo
                         LEFT JOIN contratos c ON c.InmuebleId = i.IdInmueble
-                        AND  (c.FecInicio <= @{nameof(Contrato.FecInicio)})
-                        AND (c.FecFin >= @{nameof(Contrato.FecFin)})
-                        WHERE i.Disponible = 1 AND c.IdContrato IS NULL";
+                        AND  (((c.FecInicio <= @{nameof(Contrato.FecInicio)}) AND (c.FecFin >= @{nameof(Contrato.FecInicio)}))
+                        OR ((c.FecFin >= @{nameof(Contrato.FecFin)}) AND (c.FecInicio <= @{nameof(Contrato.FecFin)})))
+                        WHERE i.Disponible = 1 AND ((c.Estado = 0) OR (c.IdContrato IS NULL))";
             using (var command = new MySqlCommand(sql, connection))
             {   
                 command.Parameters.AddWithValue($"@{nameof(Contrato.FecInicio)}", fecInicio);

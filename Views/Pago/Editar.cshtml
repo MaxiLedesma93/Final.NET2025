@@ -12,17 +12,17 @@
             <input type="hidden" name="IdPago" value="@Model.IdPago"/>
             <div class="form-group">
                 <label asp-for="NumPago" class="control-label"></label>
-                <input asp-for="NumPago" class="form-control" />
+                <input asp-for="NumPago" disabled class="form-control" />
                 <span asp-validation-for="NumPago" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Importe" class="control-label"></label>
-                <input asp-for="Importe" class="form-control" />
+                <input asp-for="Importe" disabled class="form-control" />
                 <span asp-validation-for="Importe" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaPago" class="control-label"></label>
-                <input asp-for="FechaPago" class="form-control" />
+                <input asp-for="FechaPago" disabled class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -32,7 +32,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ContratoId" class="control-label"></label>
-                <input asp-for="ContratoId" class="form-control"/>
+                <input asp-for="ContratoId" disabled class="form-control"/>
                 <span asp-validation-for="ContratoId" class="text-danger"></span>
             </div>
             <br>
