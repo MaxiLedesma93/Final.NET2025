@@ -16,5 +16,7 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
 
         Contrato? ValidarInmuebleIdyFechas(int idInmueble, DateTime fecInicio, DateTime fecFin);
 
+        IList<Contrato> ObtenerVencidos();
+
     }
 }

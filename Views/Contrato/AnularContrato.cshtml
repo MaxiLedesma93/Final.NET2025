@@ -1,0 +1,81 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Contrato;
+@{
+    ViewData["Title"] = "Detalles";
+    var multa = ViewBag.ValorMulta;
+}
+<h1>Finalizacion del Contrato</h1>
+<div>
+    <h4>Contrato</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdContrato)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdContrato)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InmuebleId)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Inmueble
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Inquilino)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Inquilino
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FecInicio)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FecInicio)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FecFin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FecFin)
+        </dd>
+        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Monto)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Monto)
+        </dd>
+        @if(Model.FecAnulacion != DateTime.MinValue){
+            <dt class="col-sm-2">Fecha Anulacion</dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FecAnulacion)
+            </dd>
+        }
+        @if(multa!=0){
+            <dt class="col-sm-2">Valor de la Multa:</dt>
+            <dd class="col-sm-10">
+                <input type="text" disabled value= @multa> 
+            </dd>
+        }
+       
+    </dl>
+</div>
+<div>
+    <form asp-action="FinalizarContrato">
+        <div class="form-group">
+            <input type="hidden" asp-for="IdContrato" value="@Model.IdContrato" class="form-control"/>
+            <div class="col-4">
+                <label asp-for="FecAnulacion" class="control-label"><strong>Fecha Anulacion:</strong></label>
+                <input type="Date" asp-for="FecAnulacion" min=@DateTime.Now value=@DateTime.Now class="form-control" />
+                <span asp-validation-for="FecAnulacion" class="text-danger"></span>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group">
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+        </div>
+    </form>
+    @Html.ActionLink("Editar", "Editar", new { id = Model.IdContrato}) |
+    <a asp-action="Listado">Volver al Listado</a>
+</div>

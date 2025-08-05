@@ -19,7 +19,6 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
 
 		public override string ToString()
 		{
-			//return $"{Apellido}, {Nombre}";
 			return $"{Nombre} {Apellido}";
 		}
 	}

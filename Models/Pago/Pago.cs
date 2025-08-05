@@ -13,7 +13,7 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
         public int NumPago { get; set; }
 
         [DisplayName("Fecha de pago"), DataType(DataType.Date)]
-        public DateTime FechaPago { get; set; }
+        public DateTime? FechaPago { get; set; }
 
         public decimal Importe { get; set; }
 
