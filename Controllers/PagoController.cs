@@ -161,6 +161,18 @@ public class PagoController : Controller
         return View(lista);
     }
 
+
+    [Authorize]
+    public IActionResult PagarMulta(int IdContrato)
+    {
+         IList<Pago> lista = repo.ObtenerPagosPorContrato(IdContrato);
+        Pago ultimoPago = lista == null ? null : lista.LastOrDefault<Pago>();
+        ultimoPago.FechaPago = DateTime.Now;
+        ultimoPago.Detalle = "Pagado : Multa + Meses Adeudados";
+        repo.Modificacion(ultimoPago);
+        TempData["Mensaje"] = "Pago realizado con Exito.";
+        return RedirectToAction("Listado", "Contrato");
+    }
     [Authorize]
     private void validaEstado(IList<Pago> lista)
     {

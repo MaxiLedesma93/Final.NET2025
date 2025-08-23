@@ -30,10 +30,10 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
 
         public bool Estado { get; set; }
 
-        public int UsuarioAlta { get; set; }
+        public int? UsuarioAlta { get; set; }
 
-        public int UsuarioBaja { get; set; }
+        public int? UsuarioBaja { get; set; }
         
-        public DateTime FecAnulacion { get; set; }
+        public DateTime? FecAnulacion { get; set; }
    }
 }

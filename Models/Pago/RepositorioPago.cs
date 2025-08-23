@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using Tp_Inmobiliaria_Ledesma_Lillo.Extensions;
 
 namespace Tp_Inmobiliaria_Ledesma_Lillo.Models;
 
@@ -99,7 +100,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                                 {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}
                             from pagos p INNER JOIN contratos c ON p.ContratoId = c.IdContrato
                             INNER JOIN inquilinos inq ON c.InquilinoId = inq.IdInquilino
-                            WHERE p.Est = 1";
+                            WHERE p.Est = 1 AND {nameof(Pago.ContratoId)} = @{nameof(Pago.ContratoId)} ";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -112,7 +113,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                         pagos.Add(new Pago{
                             IdPago = reader.GetInt32(nameof(Pago.IdPago)),
                             NumPago = reader.GetInt32(nameof(Pago.NumPago)),
-                            FechaPago = reader.GetDateTime(nameof(Pago.FechaPago)),
+                            FechaPago = reader.GetNullableDateTime(nameof(Pago.FechaPago)),
                             Importe = reader.GetDecimal(nameof(Pago.Importe)),
                             Detalle = reader.GetString(nameof(Pago.Detalle)),
                             Est = reader.GetInt32(nameof(Pago.Est)),
@@ -176,13 +177,15 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
 		{
 			var sql = @$"UPDATE pagos
 				SET
-                {nameof(Pago.Detalle)} = @{nameof(Pago.Detalle)}
+                {nameof(Pago.Detalle)} = @{nameof(Pago.Detalle)},
+                {nameof(Pago.FechaPago)} = @{nameof(Pago.FechaPago)}
 
 				WHERE {nameof(Pago.IdPago)} = @{nameof(Pago.IdPago)}";
 			using(var command = new MySqlCommand(sql, connection))
 			{
 				
                 command.Parameters.AddWithValue($"@{nameof(Pago.Detalle)}", pago.Detalle);
+                command.Parameters.AddWithValue($"@{nameof(Pago.FechaPago)}", pago.FechaPago);
 				command.Parameters.AddWithValue($"@{nameof(Pago.IdPago)}", pago.IdPago);
 				connection.Open();
 				command.ExecuteNonQuery();

@@ -172,7 +172,6 @@ public class ContratoController : Controller
                         repo.Modificacion(contrato);
                         TempData["Mensaje"] = "Datos guardados correctamente";
                         return RedirectToAction(nameof(Listado));
-
                     }
                     else
                     {
@@ -231,20 +230,21 @@ public class ContratoController : Controller
         {
             if (id > 0)
             {
-
                 ViewBag.Inmuebles = repoInmu.ObtenerTodos();
                 ViewBag.Inquilinos = repoInqui.ObtenerTodos();
                 var contrato = repo.ObtenerPorId(id);
+                ViewBag.Inquilino = contrato.Inquilino.Nombre + " " + contrato.Inquilino.Apellido;
+                ViewBag.Inmueble = contrato.Inmueble.Direccion;
                 IList<Pago> pagos = repoPago.ObtenerPagosPorContrato(id);
                 foreach (var pago in pagos)
                 {
-                    if (pago.Detalle == "Multa" || pago.Detalle == "Pago Pendiente: Multa")
+                    if (pago.Detalle == "Pagado : Multa + Meses Adeudados" || pago.Detalle == "Pago Pendiente: Multa + Meses Adeudados")
                     {
                         ViewBag.ValorMulta = pago.Importe;
+                        ViewBag.PagoDetalle = pago.Detalle;
                     }
                 }
-
-                TempData["Mensaje"] = "Datos guardados correctamente";
+                
                 return View(contrato);
             }
             else
@@ -259,56 +259,57 @@ public class ContratoController : Controller
     [Authorize]
     public IActionResult FinalizarContrato(DateTime FecAnulacion, int IdContrato)
     {
-       
+
         try
         {
-           
-          
             Contrato contrato = repo.ObtenerPorId(IdContrato);
             contrato.FecAnulacion = FecAnulacion;
+            contrato.Estado = false;
             repo.Modificacion(contrato);
-            //comparar entre fecha de inicio y fecha de fin para ver cantidad de dias. diasTotales/2 
-            //luego calcular dias entre fecha de inicio y FecAnulacion para ver si es mayor 
+            //compara entre fecha de inicio y fecha de fin para ver cantidad de dias. diasTotales/2 
+            //luego calcula dias entre fecha de inicio y FecAnulacion para ver si es mayor 
             // a la mitad de los dias.
             TimeSpan diasTotalesSpan = contrato.FecFin - contrato.FecInicio;
             int diasTotales = diasTotalesSpan.Days;
             TimeSpan diasRealesSpan = FecAnulacion - contrato.FecInicio;
             int diasReales = diasRealesSpan.Days;
+            IList<Pago> lista = repoPago.ObtenerPagosPorContrato(IdContrato);
+            //DateTime? fechaUltPAgo = new DateTime();
+            Pago ultimoPago = lista == null ? null : lista.LastOrDefault<Pago>();
+            //fechaUltPAgo = ultimoPago.FechaPago;12 + 3
+            int diferenciaMeses = ((FecAnulacion.Year - ultimoPago.FechaPago.Value.Year) * 12) +
+                FecAnulacion.Month - ultimoPago.FechaPago.Value.Month;
             if (diasReales < (int)diasTotales / 2)
             {
                 // Importe x 2 meses 
                 // Detalle Pago Pendiente: Multa.
                 // Detalle Pago Pendiente: Meses Adeudados.
-                IList<Pago> lista = repoPago.ObtenerPagosPorContrato(IdContrato);
                 int numPago = lista.Count + 1;
                 Pago pago = new Pago();
                 pago.ContratoId = IdContrato;
                 pago.NumPago = numPago;
-                pago.Importe = contrato.Monto * 2;
-                pago.Detalle = "Pago Pendiente: Multa";
+                pago.Importe = (contrato.Monto * 2) + (contrato.Monto * diferenciaMeses);
+                pago.Detalle = "Pago Pendiente: Multa + Meses Adeudados";
                 pago.Est = 1;
                 repoPago.Alta(pago);
-                return RedirectToAction(nameof(AnularContrato));
+
             }
             else
             {
                 // Importe x 1 mes 
                 // Detalle Pago Pendiente: Multa.
                 // Detalle Pago Pendiente: Meses Adeudados.
-                IList<Pago> lista = repoPago.ObtenerPagosPorContrato(IdContrato);
                 int numPago = lista.Count + 1;
                 Pago pago = new Pago();
                 pago.ContratoId = IdContrato;
                 pago.NumPago = numPago;
-                pago.Importe = contrato.Monto;
-                pago.Detalle = "Pago Pendiente: Multa";
+                pago.Importe = (contrato.Monto) + (contrato.Monto * diferenciaMeses);
+                pago.Detalle = "Pago Pendiente: Multa + Meses Adeudados";
                 pago.Est = 1;
                 repoPago.Alta(pago);
-                return RedirectToAction(nameof(AnularContrato));
             }
-            
-            
-           
+            TempData["Mensaje"] = "Contrato Anulado con Exito.";
+            return RedirectToAction(nameof(AnularContrato), new { id = contrato.IdContrato });     
         }
         catch (Exception ex)
         {

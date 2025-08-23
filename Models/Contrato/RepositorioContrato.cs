@@ -1,4 +1,6 @@
+using System.Data;
 using MySql.Data.MySqlClient;
+using Tp_Inmobiliaria_Ledesma_Lillo.Extensions;
 
 
 namespace Tp_Inmobiliaria_Ledesma_Lillo.Models;
@@ -20,14 +22,16 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                      {nameof(Contrato.FecInicio)},
                      {nameof(Contrato.FecFin)},
                      {nameof(Contrato.Monto)},
-                     {nameof(Contrato.Estado)})
+                     {nameof(Contrato.Estado)},
+                     {nameof(Contrato.UsuarioAlta)})
                        
 					VALUES (@{nameof(Contrato.InmuebleId)},
                     @{nameof(Contrato.InquilinoId)},
                     @{nameof(Contrato.FecInicio)},
                     @{nameof(Contrato.FecFin)},
                     @{nameof(Contrato.Monto)},
-                    @{nameof(Contrato.Estado)});
+                    @{nameof(Contrato.Estado)},
+                    @{nameof(Contrato.UsuarioAlta)});
                    
 					SELECT LAST_INSERT_ID();";
             using (var command = new MySqlCommand(sql, connection))
@@ -38,6 +42,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                 command.Parameters.AddWithValue($"@{nameof(Contrato.FecFin)}", c.FecFin);
                 command.Parameters.AddWithValue($"@{nameof(Contrato.Monto)}", c.Monto);
                 command.Parameters.AddWithValue($"@{nameof(Contrato.Estado)}", c.Estado);
+                command.Parameters.AddWithValue($"@{nameof(Contrato.UsuarioAlta)}", c.UsuarioAlta);
 
                 connection.Open();
                 id = Convert.ToInt32(command.ExecuteScalar());
@@ -60,7 +65,8 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.FecInicio)} = @{nameof(Contrato.FecInicio)},
             {nameof(Contrato.FecFin)} = @{nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)} = @{nameof(Contrato.Monto)},
-            {nameof(Contrato.Estado)} = @{nameof(Contrato.Estado)}
+            {nameof(Contrato.Estado)} = @{nameof(Contrato.Estado)},
+            {nameof(Contrato.FecAnulacion)} = @{nameof(Contrato.FecAnulacion)}
             
             WHERE {nameof(Contrato.IdContrato)} = @{nameof(Contrato.IdContrato)}";
 
@@ -74,6 +80,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                 command.Parameters.AddWithValue($@"{nameof(Contrato.FecFin)}", c.FecFin);
                 command.Parameters.AddWithValue($@"{nameof(Contrato.Monto)}", c.Monto);
                 command.Parameters.AddWithValue($@"{nameof(Contrato.Estado)}", c.Estado);
+                command.Parameters.AddWithValue($@"{nameof(Contrato.FecAnulacion)}", c.FecAnulacion);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -113,7 +120,8 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.IdContrato)}, {nameof(Contrato.InmuebleId)},
             {nameof(Contrato.InquilinoId)}, {nameof(Contrato.FecInicio)},
             {nameof(Contrato.FecFin)}, {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)},
-            {nameof(Inquilino.Nombre)}, {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Nombre)}, {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)},
+            {nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -136,6 +144,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -168,7 +177,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)},{nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -188,7 +197,9 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecInicio = reader.GetDateTime(nameof(Contrato.FecInicio)),
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -217,7 +228,8 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                 {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
                 {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
                 {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-                {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+                {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)},
+                {nameof(Contrato.FecAnulacion)}
             
                 FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
                 INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -240,6 +252,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -270,7 +283,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}, {nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -292,6 +305,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -320,7 +334,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}, {nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -342,6 +356,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -371,7 +386,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}, {nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -396,6 +411,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
@@ -488,7 +504,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
             {nameof(Contrato.InquilinoId)},{nameof(Contrato.InmuebleId)},
             {nameof(Contrato.FecInicio)}, {nameof(Contrato.FecFin)},
             {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
-            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}
+            {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)}, {nameof(Contrato.FecAnulacion)}
             
             FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
             INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
@@ -509,6 +525,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                             FecFin = reader.GetDateTime(nameof(Contrato.FecFin)),
                             Monto = reader.GetDecimal(nameof(Contrato.Monto)),
                             Estado = reader.GetBoolean(nameof(Contrato.Estado)),
+                            FecAnulacion = reader.GetNullableDateTime(nameof(Contrato.FecAnulacion)),
                             Inquilino = new Inquilino
                             {
                                 IdInquilino = reader.GetInt32(nameof(Contrato.InquilinoId)),
