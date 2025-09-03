@@ -46,9 +46,9 @@ public class RepositorioUsuario: RepositorioBase, IRepositorioUsuario
 		}
 	}
 
-	public Usuario? ObtenerPorId(int id)
+	public Usuario ObtenerPorId(int id)
 	{
-		Usuario? usuario = null;
+		Usuario usuario = new Usuario();
 
 		using (var connection = new MySqlConnection(connectionString))
 		{

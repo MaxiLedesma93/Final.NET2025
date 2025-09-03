@@ -10,16 +10,17 @@ public class PagoController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly IRepositorioPago repo;
     private readonly IRepositorioContrato repoContra;
-
+    private readonly IRepositorioUsuario repoUsuario;
     private readonly IConfiguration config;
 
     
 
     public PagoController(ILogger<HomeController> logger, IRepositorioPago repo,
-     IRepositorioContrato repoContra, IConfiguration config)
+     IRepositorioContrato repoContra, IRepositorioUsuario repoUsuario, IConfiguration config)
     {   this.repo = repo;
         this.config = config;
         this.repoContra = repoContra;
+        this.repoUsuario = repoUsuario;
         _logger = logger;
     }
     [Authorize]
@@ -66,19 +67,40 @@ public class PagoController : Controller
 			}
 	}
 
-    [Authorize(Policy = "Administrador")]
-    public IActionResult Eliminar(int id)
+    public IActionResult Anular(int id)
     {
        
         try
         {
-            repo.Baja(id);
+
+            repo.Anular(id);
             Pago p = repo.ObtenerPorId(id);
             p.Activo = "Inactivo";
-            TempData["Mensaje"] = "Eliminación realizada correctamente";
-            return RedirectToAction(nameof(Listado));
+            Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
+            p.UsuarioBajaId = usuario.IdUsuario;
+            repo.Modificacion(p);
+            TempData["Mensaje"] = "Anulacion de pago realizada correctamente";
+            return RedirectToAction(nameof(Listado),new {id = p.ContratoId});
         }
         catch(Exception ex)
+        {
+            return Json(new { Error = ex.Message });
+        }
+    }
+
+    [Authorize(Policy = "Administrador")]
+    public IActionResult Eliminar(int id)
+    {
+
+        try
+        {
+
+            repo.Baja(id);
+            Pago p = repo.ObtenerPorId(id);
+            TempData["Mensaje"] = "Entidad eliminada con exito";
+            return RedirectToAction(nameof(Listado));
+        }
+        catch (Exception ex)
         {
             return Json(new { Error = ex.Message });
         }
@@ -90,25 +112,28 @@ public class PagoController : Controller
     {
         try
         {
-           if(ModelState.IsValid)
-           {
-                if(pago.IdPago > 0)
+            
+           if (ModelState.IsValid)
+            {
+                Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
+                if (pago.IdPago > 0)
                 {
                     repo.Modificacion(pago);
                 }
                 else
                 {
                     pago.Est = 1;
+                    pago.UsuarioAltaId = usuario.IdUsuario;
                     repo.Alta(pago);
-                   
+
                     TempData["id"] = pago.IdPago;
                 }
-           }
-           else 
-           {
-             return View(pago); 
-           }
-            return RedirectToAction(nameof(Listado));
+            }
+            else
+            {
+                return View(pago);
+            }
+            return RedirectToAction(nameof(Listado), new {id = pago.ContratoId});
         }
         catch(Exception ex)
         {

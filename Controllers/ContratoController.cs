@@ -1,8 +1,10 @@
 using System.Collections;
+using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Org.BouncyCastle.Utilities;
 using Tp_Inmobiliaria_Ledesma_Lillo.Models;
 using Tp_Inmobiliaria_Ledesma_Lillo.Net.Controllers;
 
@@ -62,6 +64,10 @@ public class ContratoController : Controller
             if (dir != null)
             {
                 filtrados = repo.ObtenerPorInmuebleDir(dir);
+                if (filtrados.Count == 0)
+                {
+                    ViewBag.ListaVacia = "No se encontraron registros.";
+                }
                 return View(filtrados);
             }
 
@@ -70,6 +76,10 @@ public class ContratoController : Controller
 
 
                 lista = repo.ObtenerTodosVigentes((DateTime)fecInf, (DateTime)fecSup);
+                if (lista.Count == 0)
+                {
+                    ViewBag.ListaVacia = "No se encontraron registros.";
+                }
                 return View(lista);
 
             }
@@ -82,6 +92,10 @@ public class ContratoController : Controller
                 // Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
+                if (vigentes.Count==0)
+                {
+                    ViewBag.ListaVacia= "No se encontraron registros.";
+                }
                 return View(vigentes);
             }
             else
@@ -89,6 +103,10 @@ public class ContratoController : Controller
 
                 DateTime fechLim = DateTime.Today.AddDays((double)dias);
                 filtrados = repo.ObtenerPorFechaVenc(fechLim);
+                if (filtrados.Count == 0)
+                {
+                    ViewBag.ListaVacia = "No se encontraron registros.";
+                }
                 return View(filtrados);
             }
 
@@ -160,10 +178,20 @@ public class ContratoController : Controller
                 Contrato existe = repo.ValidarInmuebleIdyFechas(contrato.InmuebleId, contrato.FecInicio, contrato.FecFin);
                 if (existe == null)
                 {
-                    contrato.UsuarioAlta = usuario.IdUsuario;
-                    repo.Alta(contrato);
-                    TempData["id"] = contrato.IdContrato;
-                    return RedirectToAction(nameof(Listado));
+                    contrato.UsuarioAltaId = usuario.IdUsuario;
+                    if (contrato.IdContrato > 0)
+                    {
+                        repo.Modificacion(contrato);
+                        TempData["Mensaje"] = "Datos guardados correctamente";
+                        return RedirectToAction(nameof(Listado));
+                    }
+                    else
+                    { 
+                        repo.Alta(contrato);
+                        TempData["id"] = contrato.IdContrato;
+                        return RedirectToAction(nameof(Listado));
+                    }
+                   
                 }
                 else
                 {
@@ -215,11 +243,39 @@ public class ContratoController : Controller
     {
 
 
-        Contrato? contrato = repo.ObtenerPorId(id);
+        Contrato contrato = repo.ObtenerPorId(id);
 
         ViewBag.Inquilino = contrato.Inquilino.Nombre + " " + contrato.Inquilino.Apellido;
         ViewBag.Inmueble = contrato.Inmueble.Direccion;
 
+        if (contrato.UsuarioAltaId != null)
+        {   
+            Usuario? usuarioAlta = repoUsuario.ObtenerPorId((int)contrato.UsuarioAltaId);
+            if (usuarioAlta != null)
+            {
+                ViewBag.EmailUsuarioAlta = usuarioAlta.Email;
+            }
+        }
+        if (contrato.UsuarioBajaId != null)
+        {
+            Usuario? usuarioBaja = repoUsuario.ObtenerPorId((int)contrato.UsuarioBajaId);
+            if (usuarioBaja!=null) {
+                ViewBag.EmailUsuarioBaja= usuarioBaja.Email;
+            }
+        }
+       
+        
+        
+        
+        IList<Pago> pagos = repoPago.ObtenerPagosPorContrato(id);
+            foreach (var pago in pagos){
+                if (pago.Detalle == "Pagado : Multa + Meses Adeudados" || pago.Detalle == "Pago Pendiente: Multa + Meses Adeudados")
+                {
+                    ViewBag.ValorMulta = pago.Importe;
+                    ViewBag.PagoDetalle = pago.Detalle;
+
+                }
+            }
         return View(contrato);
     }
 
@@ -263,8 +319,10 @@ public class ContratoController : Controller
         try
         {
             Contrato contrato = repo.ObtenerPorId(IdContrato);
+            Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
             contrato.FecAnulacion = FecAnulacion;
             contrato.Estado = false;
+            contrato.UsuarioBajaId = usuario.IdUsuario;
             repo.Modificacion(contrato);
             //compara entre fecha de inicio y fecha de fin para ver cantidad de dias. diasTotales/2 
             //luego calcula dias entre fecha de inicio y FecAnulacion para ver si es mayor 
@@ -277,8 +335,18 @@ public class ContratoController : Controller
             //DateTime? fechaUltPAgo = new DateTime();
             Pago ultimoPago = lista == null ? null : lista.LastOrDefault<Pago>();
             //fechaUltPAgo = ultimoPago.FechaPago;12 + 3
-            int diferenciaMeses = ((FecAnulacion.Year - ultimoPago.FechaPago.Value.Year) * 12) +
-                FecAnulacion.Month - ultimoPago.FechaPago.Value.Month;
+            int diferenciaMeses = 1;
+            if (ultimoPago == null)
+            {
+                diferenciaMeses = ((FecAnulacion.Year - contrato.FecInicio.Year) * 12) +
+                    FecAnulacion.Month - contrato.FecInicio.Month;
+            }
+            else
+            {
+                diferenciaMeses = ((FecAnulacion.Year - ultimoPago.FechaPago.Value.Year) * 12) +
+                    FecAnulacion.Month - ultimoPago.FechaPago.Value.Month;
+            }
+               
             if (diasReales < (int)diasTotales / 2)
             {
                 // Importe x 2 meses 
@@ -291,6 +359,7 @@ public class ContratoController : Controller
                 pago.Importe = (contrato.Monto * 2) + (contrato.Monto * diferenciaMeses);
                 pago.Detalle = "Pago Pendiente: Multa + Meses Adeudados";
                 pago.Est = 1;
+                pago.UsuarioAltaId = usuario.IdUsuario;
                 repoPago.Alta(pago);
 
             }
@@ -306,10 +375,11 @@ public class ContratoController : Controller
                 pago.Importe = (contrato.Monto) + (contrato.Monto * diferenciaMeses);
                 pago.Detalle = "Pago Pendiente: Multa + Meses Adeudados";
                 pago.Est = 1;
+                pago.UsuarioAltaId = usuario.IdUsuario;
                 repoPago.Alta(pago);
             }
             TempData["Mensaje"] = "Contrato Anulado con Exito.";
-            return RedirectToAction(nameof(AnularContrato), new { id = contrato.IdContrato });     
+            return RedirectToAction(nameof(Detalle), new { id = contrato.IdContrato });     
         }
         catch (Exception ex)
         {

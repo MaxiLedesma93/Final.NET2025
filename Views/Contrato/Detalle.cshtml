@@ -1,51 +1,92 @@
 @model Tp_Inmobiliaria_Ledesma_Lillo.Models.Contrato;
 @{
     ViewData["Title"] = "Detalles";
+    var multa = ViewBag.ValorMulta;
+    var detallePago = ViewBag.PagoDetalle;
 }
 <h1>Detalles</h1>
 <div>
     <h4>Contrato</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.IdContrato)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @Html.DisplayFor(model => model.IdContrato)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.InmuebleId)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @ViewBag.Inmueble
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.Inquilino)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @ViewBag.Inquilino
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.FecInicio)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @Html.DisplayFor(model => model.FecInicio)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.FecFin)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @Html.DisplayFor(model => model.FecFin)
         </dd>
         
-        <dt class="col-sm-2">
+        <dt class="col-4">
             @Html.DisplayNameFor(model => model.Monto)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-8">
             @Html.DisplayFor(model => model.Monto)
         </dd>
+        @if(multa!=null && detallePago!="Pagado : Multa + Meses Adeudados"){
+            <dt class="col-4">@detallePago</dt>
+            <dd class="col-8">@multa</dd>
+            <form asp-action="PagarMulta", asp-controller="Pago", method="post">
+                <div class="form-group">
+                    <input type="hidden" asp-for="IdContrato" value="@Model.IdContrato" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Pagar Multa" class="btn btn-primary" />
+                </div>
+            </form>
+        }
+        @if(detallePago=="Pagado : Multa + Meses Adeudados"){
+            <dt class="col-4">@detallePago</dt>
+            <dd class="col-8">@multa</dd>
+        }
     </dl>
 </div>
+@if(User.IsInRole("Administrador")){
+    <div>
+        <h4>Auditoria</h4>
+        <hr>
+        <dl class="row">
+            <dt class="col-4">
+                Email de usuario alta: 
+            </dt>
+            <dd class="col-8">
+                @ViewBag.EmailUsuarioAlta
+            </dd>
+            <dt class="col-4">
+                Email de usuario baja:
+            </dt>
+            <dd class="col-8">
+                @ViewBag.EmailUsuarioBaja
+            </dd>
+            
+        </dl>
+
+    </div>
+}
+    
 <div>
     @Html.ActionLink("Editar", "Editar", new { id = Model.IdContrato}) |
     <a asp-action="Listado">Volver al Listado</a>

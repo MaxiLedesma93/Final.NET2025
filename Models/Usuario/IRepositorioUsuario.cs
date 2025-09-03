@@ -8,5 +8,6 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
     public interface IRepositorioUsuario : IRepositorio<Usuario>
     {
         Usuario ObtenerPorEmail(string email);
+        Usuario ObtenerPorId(int id);
     }
 }

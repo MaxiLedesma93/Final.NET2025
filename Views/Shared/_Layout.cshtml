@@ -83,6 +83,15 @@
 					</button>
 				</div>
 			}
+            else if (ViewBag.ListaVacia != null)
+			{//cartel general
+				<div class="alert alert-info alert-dismissible fade show" role="alert">
+					<strong>Información:</strong> @ViewBag.ListaVacia
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true"><i class="fa fa-window-close" aria-hidden="true"></i></span>
+					</button>
+				</div>
+			}
             @RenderBody()
         </main>
     </div>

@@ -9,6 +9,6 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
     {
         IList<Pago> ObtenerPagosPorContrato(int id);
         IList<Pago> ObtenerPagosEliminados();
-
+        int Anular(int id);
     }
 }
