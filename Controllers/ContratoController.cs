@@ -92,9 +92,9 @@ public class ContratoController : Controller
                 // Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
-                if (vigentes.Count==0)
+                if (vigentes.Count == 0)
                 {
-                    ViewBag.ListaVacia= "No se encontraron registros.";
+                    ViewBag.ListaVacia = "No se encontraron registros.";
                 }
                 return View(vigentes);
             }
@@ -186,12 +186,12 @@ public class ContratoController : Controller
                         return RedirectToAction(nameof(Listado));
                     }
                     else
-                    { 
+                    {
                         repo.Alta(contrato);
                         TempData["id"] = contrato.IdContrato;
                         return RedirectToAction(nameof(Listado));
                     }
-                   
+
                 }
                 else
                 {
@@ -249,7 +249,7 @@ public class ContratoController : Controller
         ViewBag.Inmueble = contrato.Inmueble.Direccion;
 
         if (contrato.UsuarioAltaId != null)
-        {   
+        {
             Usuario? usuarioAlta = repoUsuario.ObtenerPorId((int)contrato.UsuarioAltaId);
             if (usuarioAlta != null)
             {
@@ -259,23 +259,25 @@ public class ContratoController : Controller
         if (contrato.UsuarioBajaId != null)
         {
             Usuario? usuarioBaja = repoUsuario.ObtenerPorId((int)contrato.UsuarioBajaId);
-            if (usuarioBaja!=null) {
-                ViewBag.EmailUsuarioBaja= usuarioBaja.Email;
+            if (usuarioBaja != null)
+            {
+                ViewBag.EmailUsuarioBaja = usuarioBaja.Email;
             }
         }
-       
-        
-        
-        
-        IList<Pago> pagos = repoPago.ObtenerPagosPorContrato(id);
-            foreach (var pago in pagos){
-                if (pago.Detalle == "Pagado : Multa + Meses Adeudados" || pago.Detalle == "Pago Pendiente: Multa + Meses Adeudados")
-                {
-                    ViewBag.ValorMulta = pago.Importe;
-                    ViewBag.PagoDetalle = pago.Detalle;
 
-                }
+
+
+
+        IList<Pago> pagos = repoPago.ObtenerPagosPorContrato(id);
+        foreach (var pago in pagos)
+        {
+            if (pago.Detalle == "Pagado : Multa + Meses Adeudados" || pago.Detalle == "Pago Pendiente: Multa + Meses Adeudados")
+            {
+                ViewBag.ValorMulta = pago.Importe;
+                ViewBag.PagoDetalle = pago.Detalle;
+
             }
+        }
         return View(contrato);
     }
 
@@ -300,7 +302,7 @@ public class ContratoController : Controller
                         ViewBag.PagoDetalle = pago.Detalle;
                     }
                 }
-                
+
                 return View(contrato);
             }
             else
@@ -346,7 +348,7 @@ public class ContratoController : Controller
                 diferenciaMeses = ((FecAnulacion.Year - ultimoPago.FechaPago.Value.Year) * 12) +
                     FecAnulacion.Month - ultimoPago.FechaPago.Value.Month;
             }
-               
+
             if (diasReales < (int)diasTotales / 2)
             {
                 // Importe x 2 meses 
@@ -379,7 +381,7 @@ public class ContratoController : Controller
                 repoPago.Alta(pago);
             }
             TempData["Mensaje"] = "Contrato Anulado con Exito.";
-            return RedirectToAction(nameof(Detalle), new { id = contrato.IdContrato });     
+            return RedirectToAction(nameof(Detalle), new { id = contrato.IdContrato });
         }
         catch (Exception ex)
         {
@@ -387,6 +389,35 @@ public class ContratoController : Controller
         }
     }
 
+    [Authorize]
+    public IActionResult RenovarContrato(int id)
+    {
+        try
+        {
+
+            if (id > 0)
+            {
+                var contrato = repo.ObtenerPorId(id);
+                ViewBag.Inquilino = contrato.Inquilino.Nombre + " " + contrato.Inquilino.Apellido;
+                ViewBag.Inmueble = contrato.Inmueble.Direccion;
+                return View(contrato);
+            }
+            else
+            {
+                TempData["Mensaje"] = "No existe el contrato a renovar.";
+                return RedirectToAction(nameof(Listado));
+            }
+           
+            
+
+
+        }
+        catch (Exception ex)
+        {
+            return Json(new { Error = ex.Message });
+        }
+       
+    }
 }
 
 

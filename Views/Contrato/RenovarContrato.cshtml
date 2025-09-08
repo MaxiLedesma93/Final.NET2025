@@ -1,0 +1,93 @@
+@model Tp_Inmobiliaria_Ledesma_Lillo.Models.Contrato;
+@{
+    ViewData["Title"] = "Detalles";
+    var multa = ViewBag.ValorMulta;
+    var detallePago = ViewBag.PagoDetalle;
+}
+<h1>Detalles</h1>
+<div>
+    <h4>Contrato</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.IdContrato)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.IdContrato)
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.InmuebleId)
+        </dt>
+        <dd class="col-8">
+            @ViewBag.Inmueble
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.Inquilino)
+        </dt>
+        <dd class="col-8">
+            @ViewBag.Inquilino
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.FecInicio)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.FecInicio)
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.FecFin)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.FecFin)
+        </dd>
+        
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.Monto)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.Monto)
+        </dd>
+    </dl>
+</div>
+<div>
+    <h3>Datos para renovacion</h3>
+    <hr>
+    <div class="row">
+
+        <div class="col-md-4">
+            <form asp-action="Guardar", asp-controller="Contrato", method="post">
+                <div class="form-group">
+                    <input type="hidden" name="InquilinoId" value="@Model.InquilinoId" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="InmuebleId" value="@Model.InmuebleId" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="Estado" value="true">
+                </div>
+                <div class="form-group">
+                        <label asp-for="FecInicio" class="control-label"></label>
+                        <input name="FecInicio" type="Date" class="form-control" />
+                        <span asp-validation-for="FecInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FecFin" class="control-label"></label>
+                    <input name="FecFin" type="Date" class="form-control" />
+                    <span asp-validation-for="FecFin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Monto" class="control-label"></label>
+                    <input name="Monto" class="form-control" />
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Renovar Contrato" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    
+<div>
+    <a asp-action="Listado">Volver al Listado</a>
+</div>

@@ -169,6 +169,21 @@ public class PagoController : Controller
         
 
         Pago? pago = repo.ObtenerPorId(id);
+         if (pago.UsuarioAltaId != null)
+        {   
+            Usuario? usuarioAlta = repoUsuario.ObtenerPorId((int)pago.UsuarioAltaId);
+            if (usuarioAlta != null)
+            {
+                ViewBag.EmailUsuarioAlta = usuarioAlta.Email;
+            }
+        }
+        if (pago.UsuarioBajaId != null)
+        {
+            Usuario? usuarioBaja = repoUsuario.ObtenerPorId((int)pago.UsuarioBajaId);
+            if (usuarioBaja!=null) {
+                ViewBag.EmailUsuarioBaja= usuarioBaja.Email;
+            }
+        }
 
         return View(pago);
     }

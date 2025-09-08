@@ -45,6 +45,28 @@
         </dd>
     </dl>
 </div>
+@if(User.IsInRole("Administrador")){
+    <div>
+        <h4>Auditoria</h4>
+        <hr>
+        <dl class="row">
+            <dt class="col-4">
+                Email de usuario alta: 
+            </dt>
+            <dd class="col-8">
+                @ViewBag.EmailUsuarioAlta
+            </dd>
+            <dt class="col-4">
+                Email de usuario baja:
+            </dt>
+            <dd class="col-8">
+                @ViewBag.EmailUsuarioBaja
+            </dd>
+            
+        </dl>
+
+    </div>
+}
 <div>
     @Html.ActionLink("Editar", "Editar", new { id = Model.IdPago}) |
     <a asp-action="Listado">Volver al Listado</a>
