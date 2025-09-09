@@ -189,10 +189,10 @@ public class PagoController : Controller
     }
 
     [Authorize]
-    public IActionResult PagosEliminados()
+    public IActionResult PagosEliminados(int id)
     {
         
-        var lista = repo.ObtenerPagosEliminados();
+        var lista = repo.ObtenerPagosEliminadosPorContrato(id);
         validaEstado(lista);
         if(lista.Count == 0)
         {

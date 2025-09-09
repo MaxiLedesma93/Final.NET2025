@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
-            <a asp-action="Crear" title="Nuevo Contrato"><i class="btn btn-primary"> Nuevo Contrato</i></a>   
+            <a asp-action="Crear" title="Nuevo Contrato"><i class="btn btn-primary"> <strong>Nuevo Contrato</strong></i></a>   
         </div>
         <div class="col-3">
-            <a asp-asp-controller="Contrato" asp-action="Vencidos" title="Listado"><i class="btn btn-primary"> Vencidos/Finalizados</i></a>   
+            <a asp-asp-controller="Contrato" asp-action="Vencidos" title="Listado"><i class="btn btn-primary"> <strong>Vencidos/Finalizados</strong></i></a>   
         </div>
     </div>
     <br>
@@ -102,9 +102,6 @@
                 @Html.DisplayNameFor(model => model.Monto)
             </th>
             <th style="text-align: center;">
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th style="text-align: center;">
                 Editar
             </th>
             <th style="text-align: center;">
@@ -150,25 +147,22 @@
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
             <td style="text-align: center;">
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td style="text-align: center;">
                 <a asp-action="Editar" asp-route-id="@item.IdContrato" title="Editar" class="btn btn-primary"><i class="fa-solid fa-square-pen"></i></a>
             </td>
             <td style="text-align: center;">
 				<a asp-action="Detalle" asp-route-id="@item.IdContrato" title="Detalle" class="btn btn-success"><i class="fa-solid fa-circle-info"></i></a>
 			</td>
             <td style=" text-align: center;">
-				<a asp-action="RenovarContrato" asp-route-id="@item.IdContrato" class="btn btn-warning"><i class="fa-solid fa-rotate-right"></i></a>
+				<a asp-action="RenovarContrato" asp-route-id="@item.IdContrato" title="Renovar Contrato" class="btn btn-warning" style="color: white;"><i class="fa-solid fa-rotate-right"></i></a>
 			</td>
             <td  style="text-align: center;">
-                <a asp-controller="Pago" asp-action="Crear" asp-route-id="@item.IdContrato" class="btn btn-primary"><i class="fa-solid fa-coins"></i></a>
+                <a asp-controller="Pago" asp-action="Crear" asp-route-id="@item.IdContrato" title="Nuevo Pago" class="btn btn-primary"><i class="fa-solid fa-coins"></i></a>
             </td>
             <td style="text-align: center;">
-                <a asp-controller="Pago" asp-action="Listado" asp-route-id="@item.IdContrato" class="btn btn-success"><i class="fa-solid fa-list-check"></i></a>
+                <a asp-controller="Pago" asp-action="Listado" asp-route-id="@item.IdContrato" title="Lista de Pagos" class="btn btn-success"><i class="fa-solid fa-list-check"></i></a>
             </td>
              <td style="text-align: center;">
-                <a asp-controller="Contrato" asp-action="AnularContrato" asp-route-id="@item.IdContrato" class="btn btn-danger"><i class="fa-solid fa-ban"></i></a>
+                <a asp-controller="Contrato" asp-action="AnularContrato" asp-route-id="@item.IdContrato" title="Anular Contrato" class="btn" style="background-color: orangered; color: white"><i class="fa-solid fa-ban"></i></a>
             </td>
             @if(User.IsInRole("Administrador")){
             <td style="text-align: center;">

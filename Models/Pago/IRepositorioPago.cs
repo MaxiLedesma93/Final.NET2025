@@ -8,7 +8,7 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
     public interface IRepositorioPago : IRepositorio<Pago>
     {
         IList<Pago> ObtenerPagosPorContrato(int id);
-        IList<Pago> ObtenerPagosEliminados();
+        IList<Pago> ObtenerPagosEliminadosPorContrato(int id);
         int Anular(int id);
     }
 }

@@ -8,10 +8,10 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
-            <a asp-action="Crear" title="Nuevo Contrato"><i class="btn btn-primary"> Nuevo Contrato</i></a>   
+            <a asp-action="Crear" title="Nuevo Contrato"><i class="btn btn-primary"><strong>Nuevo Contrato</strong> </i></a>   
         </div>
         <div class="col-3">
-            <a asp-asp-controller="Contrato" asp-action="Listado" title="Vigentes"><i class="btn btn-primary"> Vigentes</i></a>   
+            <a asp-asp-controller="Contrato" asp-action="Listado" title="Vigentes"><i class="btn btn-primary"> <strong>Vigentes</strong> </i></a>   
         </div>
         </div>
         <br>
@@ -88,66 +88,77 @@
    
     <thead>
         <tr>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.InmuebleId)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.InquilinoId)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.FecInicio)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.FecFin)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.Monto)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
+            <th style="text-align: center;">
+                Editar
             </th>
-            <th></th>
+            <th style="text-align: center;">
+                Detalle
+            </th>
+            <th style="text-align: center;">
+                Nuevo Pago
+            </th>
+            <th style="text-align: center;">
+                Lista de Pagos
+            </th>
+            @if(User.IsInRole("Administrador")){
+                <th style="text-align: center;">
+                    Eliminar
+                </th>
+            }
+           
         </tr>
     </thead>
     <tbody class="table-group-divider">
 
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td style="text-align: center;">
                 @(item.Inmueble.Direccion)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.FecInicio)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.FecFin)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+            <td style="text-align: center;">
+                <a asp-action="Editar" asp-route-id="@item.IdContrato" title="Editar" class="btn btn-primary"><i class="fa-solid fa-square-pen"></i></a>
             </td>
-                <td>
-                    <a asp-action="Editar" asp-route-id="@item.IdContrato" title="Editar" class="btn btn-primary"><i class="fa-solid fa-square-pen"></i></a>
-                </td>
-            <td>
+            <td style="text-align: center;">
 				<a asp-action="Detalle" asp-route-id="@item.IdContrato" title="Detalle" class="btn btn-success"><i class="fa-solid fa-circle-info"></i></a>
 			</td>
-            @if(User.IsInRole("Administrador")){
-            <td>
+            <td style="text-align: center;">
+                <a asp-controller="Pago" asp-action="Crear" asp-route-id="@item.IdContrato" title="Nuevo Pago" class="btn btn-primary"><i class="fa-solid fa-coins"></i></a>
+            </td>
+            <td style="text-align: center;">
+                <a asp-controller="Pago" asp-action="Listado" asp-route-id="@item.IdContrato" title="Lista de Pagos" class="btn btn-success"><i class="fa-solid fa-list-check"></i></a>
+            </td>
+             @if(User.IsInRole("Administrador")){
+            <td style="text-align: center;">
                 <a asp-action="Eliminar" asp-route-id="@item.IdContrato" title="Eliminar" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
             </td>
             }
-            <td>
-                <a asp-controller="Pago" asp-action="Crear" asp-route-id="@item.IdContrato">Nuevo Pago</a>
-            </td>
-            <td>
-                <a asp-controller="Pago" asp-action="Listado" asp-route-id="@item.IdContrato">Ver Pagos</a>
-            </td>
         </tr>
 }
     </tbody>

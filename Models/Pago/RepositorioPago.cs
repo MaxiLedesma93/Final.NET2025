@@ -246,7 +246,7 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
 
     }
 
-    public IList<Pago> ObtenerPagosEliminados()
+    public IList<Pago> ObtenerPagosEliminadosPorContrato(int id)
     {
         var pagos = new List<Pago>();
 
@@ -258,9 +258,10 @@ public class RepositorioPago : RepositorioBase, IRepositorioPago
                             {nameof(Inquilino.Nombre)}, p.{nameof(Pago.UsuarioAltaId)}, p.{nameof(Pago.UsuarioBajaId)}
                             from pagos p INNER JOIN contratos c ON p.ContratoId = c.IdContrato
                             INNER JOIN inquilinos inq ON c.InquilinoId = inq.IdInquilino
-                            WHERE p.Est = 0";
+                            WHERE p.Est = 0 AND {nameof(Pago.ContratoId)} = @{nameof(Pago.ContratoId)} ";
             using (var command = new MySqlCommand(sql, connection))
             {
+                command.Parameters.AddWithValue($"@{nameof(Pago.ContratoId)}", id);
                 connection.Open();
                 using (var reader = command.ExecuteReader())
 
