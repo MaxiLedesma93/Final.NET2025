@@ -14,12 +14,15 @@ public class PropietarioController : Controller
     private readonly IConfiguration config;
     private readonly IRepositorioPropietario repo;
     
+    private readonly IRepositorioInmueble repoInmueble;
+
 
     public PropietarioController(IRepositorioPropietario repo, ILogger<HomeController> logger,
-     IConfiguration config)
-    {   this.config = config;
-        this.repo  =repo;
+     IConfiguration config, IRepositorioInmueble repoI)
+    { this.config = config;
+        this.repo = repo;
         _logger = logger;
+        this.repoInmueble = repoI;
     }
 
     [Authorize]
@@ -115,9 +118,18 @@ public class PropietarioController : Controller
         
         try
         {
-            repo.Baja(id);
-            TempData["Mensaje"] = "Eliminación realizada correctamente";
-            return RedirectToAction(nameof(Listado));
+            IList<Inmueble> inmuebles = repoInmueble.buscarPorPropietario(id);
+            if (inmuebles.Count == 0)
+            {
+                repo.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Listado));
+            }
+            else
+            { 
+                TempData["Mensaje"] = "No se puede eliminar porque hay un inmueble relacionado a este propietario. Elimine primero el Inmueble!!";
+                return RedirectToAction(nameof(Listado));
+            }
         }
         catch(Exception ex)
         {

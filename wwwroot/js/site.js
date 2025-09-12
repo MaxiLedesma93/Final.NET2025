@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 
 
-const doc = document.getElementById("ClaveRep").addEventListener("input",comprobarClave);
+/*const doc = document.getElementById("ClaveRep").addEventListener("input",comprobarClave);
 function comprobarClave(){
         let pass = document.getElementById("clnueva").value;
         let conf =document.getElementById("ClaveRep").value;
@@ -16,4 +16,4 @@ function comprobarClave(){
         else{
            document.getElementById("btnClave").disabled=true;
         }
-}
+}*/

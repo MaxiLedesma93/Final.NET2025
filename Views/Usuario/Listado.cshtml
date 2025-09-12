@@ -29,7 +29,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Rol)
             </th>
-            <th></th>
+            <th>
+                Editar
+            </th>
+            <th>
+                Eliminar
+            </th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -55,10 +60,10 @@
 			</td>
             @if(User.IsInRole("Administrador")){
                 <td>
-                    <a asp-action="Editar" asp-route-id="@item.IdUsuario" title="Editar"><i class="fa-solid fa-square-pen"></i></a>
+                    <a asp-action="Editar" asp-route-id="@item.IdUsuario" title="Editar" class="btn btn-primary"><i class="fa-solid fa-square-pen"></i></a>
                 </td>
                 <td>
-                    <a asp-action="Eliminar" asp-route-id="@item.IdUsuario" title="Eliminar"><i class="fa-solid fa-trash-can"></i></a>
+                    <a asp-action="Eliminar" asp-route-id="@item.IdUsuario" title="Eliminar" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
                 </td>
                 }
 		</tr>
