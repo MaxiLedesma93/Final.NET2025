@@ -87,9 +87,11 @@
             <th>
                 Detalle
             </th>
-            <th>
-                Eliminar
-            </th>
+            @if(User.IsInRole("Administrador")){
+                <th style="text-align: center;">
+                    Eliminar
+                </th>
+            }
         </tr>
     </thead>
     <tbody class="table-group-divider">

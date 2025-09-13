@@ -8,7 +8,6 @@
 
 <h3>¿Seguro que desea eliminar el Usuario?</h3>
 <div>
-    <h4>Usuario</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -34,21 +33,7 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Clave)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Clave)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AvatarFile)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AvatarFile)
-        </dd>
-        
-        
+        </dd>      
     </dl>
     <br>
     <form asp-action="Eliminar">

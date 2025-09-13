@@ -346,7 +346,16 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Controllers
 		[Authorize(Policy = "Administrador")]
 		public ActionResult Eliminar(int id)
 		{
-			return View();
+			Usuario usuario = repo.ObtenerPorId(id);
+			if (usuario != null)
+			{
+				return View(usuario);
+			}
+			else
+			{
+				TempData["mensaje"] = "No se encontró al usuario";
+				return View();
+			}
 		}
 
 		// POST: Usuarios/Delete/5
