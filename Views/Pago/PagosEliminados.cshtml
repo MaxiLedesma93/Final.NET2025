@@ -7,54 +7,57 @@
 <table class="table table-striped table-hover">
     <thead>
         <tr>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.NumPago)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.Importe)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.FechaPago)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.Detalle)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.ContratoId)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.contrato.Inquilino)
             </th>
-            <th>
+            <th style="text-align: center;">
                 @Html.DisplayNameFor(model => model.Activo)
             </th>
-            <th></th>
+            <th style="text-align: center;"> Ver mas</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.NumPago)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.Importe)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.FechaPago)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.Detalle)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.ContratoId)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @(item.contrato.Inquilino.Apellido + " " + item.contrato.Inquilino.Nombre)
             </td>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.Activo)
             </td>
+            <td style="text-align: center;">
+				<a asp-action="Detalle" asp-route-id="@item.IdPago" title="Detalle" class="btn btn-success"><i class="fa-solid fa-circle-info"></i></a>
+			</td style="text-align: center;">
         </tr>
 }
     </tbody>

@@ -107,6 +107,11 @@ public class InmuebleController : Controller
 			{
                 ViewBag.Tipos = repoTipo.ObtenerTodos();
                 ViewBag.Propietarios = repoProp.ObtenerTodos();
+                IList<String> listaDisponibilidad = new List<String>();
+                IList<String> listaUso = new List<String>();
+                cargarLista(listaDisponibilidad, listaUso);
+                ViewBag.Disponibilidad = listaDisponibilidad;
+                ViewBag.Uso = listaUso;
                 return View();
 			}
 			catch (Exception ex)
@@ -231,5 +236,6 @@ public class InmuebleController : Controller
         listaD.Add("Disponible");
         listaU.Add("Residencial");
         listaU.Add("Comercial");
+        listaU.Add("Vacacional");
     }
 }

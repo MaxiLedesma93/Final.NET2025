@@ -4,6 +4,8 @@
     ViewData["Title"] = "Guardar";
     var listaPropietarios = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Propietario>)ViewBag.Propietarios;
     var listaTipos = (IList<Tp_Inmobiliaria_Ledesma_Lillo.Models.Tipo>)ViewBag.Tipos;
+    var listaUso = ViewBag.Uso;
+
 }
 
 <h1>Crear</h1>
@@ -44,12 +46,13 @@
                 <input asp-for="Longitud" class="form-control" />
                 <span asp-validation-for="Longitud" class="text-danger"></span>
             </div>
-            <div class="form-group">
-            <div class="form-group">
+             <div class="form-group">
 				<label class="control-label">Uso</label>
 				<select class="form-control" name="Uso">
-					<option value="Residencial">Residencial</option>
-                    <option value="Comercial">Comercial</option>
+					@foreach (var item in listaUso)
+					{
+                        <option value="@item">@(item)</option>     
+					}
 				</select>
 				<span asp-validation-for="Uso" class="text-danger"></span>
 			</div>
