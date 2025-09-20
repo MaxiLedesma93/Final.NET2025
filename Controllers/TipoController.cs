@@ -13,11 +13,15 @@ public class TipoController : Controller
 
     private readonly IConfiguration config;
     private readonly IRepositorioTipo repo;
+
+    private readonly IRepositorioInmueble inmu;
     
 
-    public TipoController(IRepositorioTipo repo, ILogger<HomeController> logger, IConfiguration config)
-    {   this.config = config;
-        this.repo  =repo;
+    public TipoController(IRepositorioTipo repo, ILogger<HomeController> logger, IConfiguration config, IRepositorioInmueble inmu)
+    {
+        this.config = config;
+        this.repo = repo;
+        this.inmu = inmu;
         _logger = logger;
     }
     
@@ -58,14 +62,24 @@ public class TipoController : Controller
     [Authorize(Policy = "Administrador")]
     public IActionResult Eliminar(int id)
     {
-        
+
         try
         {
-            repo.Baja(id);
-            TempData["Mensaje"] = "Eliminación realizada correctamente";
-            return RedirectToAction(nameof(Listado));
+            Inmueble inmueble = inmu.ObtenerPorTipoInmueble(id);
+            if (inmueble == null)
+            {
+                repo.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Listado));
+            }
+            else
+            { 
+                TempData["Mensaje"] = "No se puede eliminar este Tipo Inmueble porque tiene un inmueble asociado.";
+                return RedirectToAction(nameof(Listado));
+            }
+            
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return Json(new { Error = ex.Message });
         }

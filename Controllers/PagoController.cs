@@ -24,15 +24,17 @@ public class PagoController : Controller
         _logger = logger;
     }
     [Authorize]
-    public IActionResult Listado(int id)
+    public IActionResult Listado(int id, bool nuevo)
     {
         try
         {
             var lista = repo.ObtenerPagosPorContrato(id);
             if(lista.Count != 0)
             { validaEstado(lista); }
-            
-            ViewBag.id = id;
+            if (nuevo)
+            { 
+                ViewBag.id = id;
+            }
             // TempData es para pasar datos entre acciones
 				// ViewBag/Data es para pasar datos del controlador a la vista
 				// Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
@@ -110,22 +112,24 @@ public class PagoController : Controller
     [Authorize]
     public IActionResult Guardar(Pago pago)
     {
+        bool nuevo = false;
         try
         {
-            
-           if (ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
                 Usuario usuario = repoUsuario.ObtenerPorEmail(User.Identity.Name);
                 if (pago.IdPago > 0)
                 {
                     repo.Modificacion(pago);
+                    TempData["id"] = pago.IdPago;
                 }
                 else
                 {
                     pago.Est = 1;
                     pago.UsuarioAltaId = usuario.IdUsuario;
                     repo.Alta(pago);
-
+                    nuevo = true;
                     TempData["id"] = pago.IdPago;
                 }
             }
@@ -133,9 +137,9 @@ public class PagoController : Controller
             {
                 return View(pago);
             }
-            return RedirectToAction(nameof(Listado), new {id = pago.ContratoId});
+            return RedirectToAction(nameof(Listado), new { id = pago.ContratoId, nuevo = nuevo });
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return Json(new { Error = ex.Message });
         }

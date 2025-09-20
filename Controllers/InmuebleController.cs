@@ -13,14 +13,17 @@ public class InmuebleController : Controller
     private readonly IRepositorioInmueble repo;
     private readonly IRepositorioTipo repoTipo;
 
+    private readonly IRepositorioContrato repoContrato;
 
-    public InmuebleController( IRepositorioInmueble repo, IRepositorioPropietario repoProp,
-    IRepositorioTipo repoTipo, ILogger<HomeController> logger, IConfiguration config)
-    {   
+
+    public InmuebleController(IRepositorioInmueble repo, IRepositorioPropietario repoProp,
+    IRepositorioTipo repoTipo, ILogger<HomeController> logger, IConfiguration config, IRepositorioContrato repoContrato)
+    {
         this.config = config;
         this.repo = repo;
         this.repoProp = repoProp;
         this.repoTipo = repoTipo;
+        this.repoContrato = repoContrato;
         _logger = logger;
     }
 
@@ -53,10 +56,7 @@ public class InmuebleController : Controller
                 return View(listaSinContratos);
             }
             var lista = repo.ObtenerTodos();
-            validaDisponibles(lista);
-            return View(lista);
-           /* var lista = repo.ObtenerTodos();
-               ViewBag.id = TempData["id"];
+              ViewBag.id = TempData["id"];
                // TempData es para pasar datos entre acciones
                    // ViewBag/Data es para pasar datos del controlador a la vista
                    // Si viene alguno valor por el tempdata, lo paso al viewdata/viewbag
@@ -64,7 +64,7 @@ public class InmuebleController : Controller
                        ViewBag.Mensaje = TempData["Mensaje"];
                validaDisponibles(lista);
                return View(lista);
-               */
+               
         }
         catch (Exception ex)
         {
@@ -154,9 +154,19 @@ public class InmuebleController : Controller
        
         try
         {
-            repo.Baja(id);
-            TempData["Mensaje"] = "Eliminación realizada correctamente";
-            return RedirectToAction(nameof(Listado));
+            IList<Contrato> contratos = repoContrato.ObtenerPorInmuebleId(id);
+            if (contratos.Count() == 0)
+            {
+                repo.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Listado));
+            }
+            else
+            {
+                TempData["Mensaje"] = "No se puede eliminar este inmueble porque tiene un contrato asociado.";
+                return RedirectToAction(nameof(Listado));
+            }
+            
         }
         catch(Exception ex)
         {

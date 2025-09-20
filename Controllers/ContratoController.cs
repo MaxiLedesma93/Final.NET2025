@@ -228,9 +228,19 @@ public class ContratoController : Controller
 
         try
         {
-            repo.Baja(id);
-            TempData["Mensaje"] = "Eliminación realizada correctamente";
-            return RedirectToAction(nameof(Listado));
+            IList<Pago> pagos = repoPago.ObtenerPagosPorContrato(id);
+            if (pagos.Count() == 0)
+            {
+                repo.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Listado));
+            }
+            else
+            { 
+                TempData["Mensaje"] = "No se puede eliminar este contrato porque tiene pagos asociados.";
+                return RedirectToAction(nameof(Listado));
+            }
+                
         }
         catch (Exception ex)
         {

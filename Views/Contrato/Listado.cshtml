@@ -5,7 +5,7 @@
     var listaVacia = ViewBag.ListaVacia;
 }
 
-<h1>Contratos</h1>
+<h1>Contratos Vigentes</h1>
 <div class="container">
     <div class="row">
         <div class="col-2">
@@ -67,11 +67,11 @@
                     <div class="col-3 ">
                         <input type="submit" value="Filtrar" class="btn btn-lg btn-primary">
                     </div>
-                    
-                </div>
-                
-            </div>
-            
+                    <div class="col-3">
+                        <a asp-action="Listado"><i class="btn btn-lg btn-primary">Limpiar</i></a>
+                    </div>
+                </div>              
+            </div>           
         }
       </div>
     </div>

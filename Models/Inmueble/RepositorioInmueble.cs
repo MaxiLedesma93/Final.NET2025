@@ -411,15 +411,15 @@ public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
                         OR ((c.FecFin >= @{nameof(Contrato.FecFin)}) AND (c.FecInicio <= @{nameof(Contrato.FecFin)})))
                         WHERE i.Disponible = 1 AND ((c.Estado = 0) OR (c.IdContrato IS NULL))";
             using (var command = new MySqlCommand(sql, connection))
-            {   
+            {
                 command.Parameters.AddWithValue($"@{nameof(Contrato.FecInicio)}", fecInicio);
-				command.Parameters.AddWithValue($"@{nameof(Contrato.FecFin)}", fecFin);
+                command.Parameters.AddWithValue($"@{nameof(Contrato.FecFin)}", fecFin);
                 connection.Open();
                 using (var reader = command.ExecuteReader())
 
                     while (reader.Read())
                     {
-                        
+
                         inmuebles.Add(new Inmueble
                         {
                             IdInmueble = reader.GetInt32(nameof(Inmueble.IdInmueble)),
@@ -451,6 +451,62 @@ public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
         }
     }
 
+    public Inmueble? ObtenerPorTipoInmueble(int id)
+    {
+        Inmueble? inmueble = null;
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT {nameof(Inmueble.IdInmueble)},{nameof(Inmueble.PropietarioId)}, 
+                        {nameof(Propietario.Nombre)}, {nameof(Propietario.Apellido)},
+                        {nameof(Inmueble.Ambientes)}, {nameof(Inmueble.Direccion)}, {nameof(Inmueble.Uso)}, 
+                        {nameof(Inmueble.Latitud)},
+                        {nameof(Inmueble.Longitud)}, {nameof(Inmueble.Superficie)}, {nameof(Inmueble.Importe)}, 
+                        {nameof(Inmueble.Disponible)},
+                        {nameof(Inmueble.TipoId)}, {nameof(Tipo.Descripcion)} 
+                        FROM inmuebles i INNER JOIN propietarios p ON i.PropietarioId = p.IdPropietario
+                        INNER JOIN tipos t ON i.TipoId = t.IdTipo
+                        WHERE {nameof(Inmueble.TipoId)} = @{nameof(Inmueble.TipoId)}";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Inmueble.TipoId)}", id);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+
+                    if (reader.Read())
+                    {
+                        inmueble = new Inmueble
+                        {
+                            IdInmueble = reader.GetInt32(nameof(Inmueble.IdInmueble)),
+                            PropietarioId = reader.GetInt32(nameof(Inmueble.PropietarioId)),
+                            Ambientes = reader.GetInt32(nameof(Inmueble.Ambientes)),
+                            Direccion = reader.GetString(nameof(Inmueble.Direccion)),
+                            Uso = reader.GetString(nameof(Inmueble.Uso)),
+                            Latitud = reader.GetDecimal(nameof(Inmueble.Latitud)),
+                            Longitud = reader.GetDecimal(nameof(Inmueble.Longitud)),
+                            Superficie = reader.GetInt32(nameof(Inmueble.Superficie)),
+                            Importe = reader.GetInt32(nameof(Inmueble.Importe)),
+                            TipoId = reader.GetInt32(nameof(Inmueble.TipoId)),
+                            Disponible = reader.GetInt32(nameof(Inmueble.Disponible)),
+                            Duenio = new Propietario
+                            {
+                                IdPropietario = reader.GetInt32(nameof(Inmueble.PropietarioId)),
+                                Nombre = reader.GetString(nameof(Propietario.Nombre)),
+                                Apellido = reader.GetString(nameof(Propietario.Apellido)),
+                            },
+                            TipoInmueble = new Tipo
+                            {
+                                IdTipo = reader.GetInt32(nameof(Inmueble.TipoId)),
+                                Descripcion = reader.GetString(nameof(Tipo.Descripcion)),
+                            }
+                        };
+                    }
+                connection.Close();
+
+            }
+            return inmueble;
+        }
+    }
 }
 //consulta que reciba 2 fechas para filtrar los contratos y devolver solo los inmuebles que no tengan contrato en esa fecha.
 

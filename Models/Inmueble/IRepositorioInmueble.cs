@@ -11,5 +11,7 @@ namespace Tp_Inmobiliaria_Ledesma_Lillo.Models
             IList<Inmueble>? obtenerInmueblesSuspendidos();
             IList<Inmueble>? ObtenerDisponibles();
             IList<Inmueble>? ObtenerSinContrato(DateTime? fecInicio, DateTime? fecFin);
+
+            Inmueble ObtenerPorTipoInmueble(int id);
         }
 }

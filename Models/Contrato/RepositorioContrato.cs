@@ -240,7 +240,7 @@ public class RepositorioContrato : RepositorioBase, IRepositorioContrato
                 {nameof(Contrato.Monto)}, {nameof(Contrato.Estado)}, {nameof(Inquilino.Nombre)},
                 {nameof(Inquilino.Apellido)}, {nameof(Inmueble.Direccion)},
                 {nameof(Contrato.FecAnulacion)}, {nameof(Contrato.UsuarioAltaId)}, 
-                {nameof(Contrato.UsuarioBajaId)},
+                {nameof(Contrato.UsuarioBajaId)}
             
                 FROM contratos c INNER JOIN inquilinos i ON c.InquilinoId = i.IdInquilino
                 INNER JOIN inmuebles inm ON c.InmuebleId = inm.IdInmueble
