@@ -181,12 +181,14 @@ public class ContratoController : Controller
                     contrato.UsuarioAltaId = usuario.IdUsuario;
                     if (contrato.IdContrato > 0)
                     {
+                        contrato.Estado = true;
                         repo.Modificacion(contrato);
                         TempData["Mensaje"] = "Datos guardados correctamente";
                         return RedirectToAction(nameof(Listado));
                     }
                     else
                     {
+                        contrato.Estado = true;
                         repo.Alta(contrato);
                         TempData["id"] = contrato.IdContrato;
                         return RedirectToAction(nameof(Listado));
